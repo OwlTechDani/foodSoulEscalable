@@ -59,6 +59,7 @@ Angular abre `http://localhost:4200`. El cliente consulta la API; si esta no est
 - API Express organizada en servidor, rutas y controladores.
 - Respuestas JSON y códigos HTTP básicos.
 - Datos de ejemplo claramente marcados como mock.
+- Búsqueda local por título e ingredientes y filtro por categoría.
 - Documentación del alcance y tareas pendientes.
 
 ## Qué falta (intencionalmente)
@@ -67,7 +68,7 @@ Angular abre `http://localhost:4200`. El cliente consulta la API; si esta no est
 - Operaciones POST, PUT y DELETE para recetas y comentarios.
 - MongoDB, Mongoose, modelos y persistencia.
 - Autenticación JWT, roles y protección de rutas.
-- Búsqueda, filtros, paginación y panel de administración.
+- Paginación, búsqueda desde la API y panel de administración.
 - Pruebas automatizadas, carga de imágenes y despliegue.
 
 Consulta [`docs/estado-del-proyecto.md`](docs/estado-del-proyecto.md) para el plan de continuación y [`docs/api.md`](docs/api.md) para los endpoints actuales.
@@ -77,3 +78,7 @@ Lee también [`docs/uso-de-ia-y-validacion.md`](docs/uso-de-ia-y-validacion.md) 
 ## Nota académica
 
 El material generado debe revisarse, ejecutarse y comprenderse antes de entregarlo. Explica cada archivo y adapta los datos, diseño y decisiones al trabajo propio. La propuesta y el contenido final siguen siendo responsabilidad del estudiante.
+
+## Diseño del frontend
+
+Consulta [componentes y diseño](docs/componentes-y-diseno.md) para las entradas, eventos, referencias visuales y comprobación manual del tablón de recetas.

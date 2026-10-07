@@ -14,7 +14,7 @@ El alcance se dejó deliberadamente a medio camino. No se debe interpretar la pr
 
 | Módulo | Estado en esta base | Observación |
 | --- | --- | --- |
-| Inicio y catálogo público | Parcial | Catálogo consultable, sin búsqueda ni filtros |
+| Inicio y catálogo público | Parcial | Catálogo con búsqueda local y filtro por categoría; sin paginación |
 | Detalle de receta | Parcial | Datos, ingredientes y preparación; comentarios pendientes |
 | Registro e inicio de sesión | Pendiente | Sin usuarios ni sesiones |
 | Publicar, editar y borrar | Pendiente | API actual es de solo lectura |
@@ -38,7 +38,7 @@ La organización emplea Angular standalone (Angular 18) para evitar módulos cer
 ## Siguiente orden sugerido
 
 1. Revisar las recetas mock y reemplazarlas con contenido propio.
-2. Implementar búsqueda por título y filtros del catálogo.
+2. Trasladar la búsqueda y los filtros a la API cuando aumente el catálogo.
 3. Crear formulario de receta con validaciones y primero probarlo con datos en memoria.
 4. Agregar operaciones de escritura a Express y documentar sus respuestas.
 5. Diseñar esquemas Mongoose y conectar MongoDB usando variables de entorno.

@@ -18,6 +18,8 @@ Antes de entregar o publicar:
 6. Leer cada archivo y poder explicar componentes, interfaces, servicio, rutas, controlador, middleware y datos mock.
 7. Cambiar y validar el contenido y diseño para que correspondan con la versión propia del proyecto.
 
-## Límite de comprobación de esta copia
+## Comprobación de la revisión visual del frontend
 
-Se validó la sintaxis de los archivos del backend con `node --check` y el formato JSON de los archivos de configuración. No se completó `npm install` ni se ejecutó una compilación Angular en el entorno de preparación porque las descargas de npm quedaron pendientes con la red restringida. Por tanto, los pasos anteriores siguen siendo necesarios; no se declara esta versión como compilada ni probada de extremo a extremo.
+Se instalaron las dependencias y se ejecutó `npm run build` correctamente con validación de plantillas Angular. El bundle inicial es de aproximadamente 326 kB, dentro del presupuesto configurado.
+
+La prueba en navegador y las capturas están pendientes: No se dispone de un navegador instalado verificado en este entorno. No se declara que la revisión visual o las pruebas de interacción hayan pasado. Sigue la lista manual de `componentes-y-diseno.md` antes de aprobar el PR.

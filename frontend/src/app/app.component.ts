@@ -1,30 +1,10 @@
 import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-
+import { RouterOutlet } from '@angular/router';
+import { SiteHeaderComponent } from './components/site-header/site-header.component';
+import { SiteFooterComponent } from './components/site-footer/site-footer.component';
 @Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [RouterLink, RouterLinkActive, RouterOutlet],
-  template: `
-    <header class="site-header">
-      <a class="brand" routerLink="/recipes" aria-label="Food For My Soul, ir al catálogo">
-        <span class="brand-mark">✳</span>
-        <span>food for <em>my soul</em></span>
-      </a>
-      <nav aria-label="Navegación principal">
-        <a routerLink="/recipes" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Recetas</a>
-        <a class="nav-note" href="#proyecto">Una cocina compartida</a>
-      </nav>
-      <a class="header-action" routerLink="/recipes">Explorar <span aria-hidden="true">↗</span></a>
-    </header>
-
-    <main><router-outlet /></main>
-
-    <footer id="proyecto" class="site-footer">
-      <a class="brand footer-brand" routerLink="/recipes"><span class="brand-mark">✳</span><span>food for <em>my soul</em></span></a>
-      <p>Recetas que se sienten como en casa.</p>
-      <small>Prototipo académico · Food For My Soul</small>
-    </footer>
-  `,
+  selector: 'app-root', standalone: true,
+  imports: [RouterOutlet, SiteHeaderComponent, SiteFooterComponent],
+  template: `<a class="skip-link" href="#contenido">Saltar al contenido</a><app-site-header /><main id="contenido"><router-outlet /></main><app-site-footer />`
 })
 export class AppComponent {}
