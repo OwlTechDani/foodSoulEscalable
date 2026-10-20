@@ -1,18 +1,7 @@
-# Uso de IA y verificación académica
+# Uso de IA en el desarrollo
 
-## Apoyo utilizado
+Utilicé ChatGPT como apoyo para explorar la implementación de Food For My Soul. Partí de la propuesta del proyecto y formulé las respectivas indicaciones concretas, limitadas a mantener el alcance del proyecto dentro de los temas vistos en clase para reforzar el aprendizaje solido de los temas de la materia y no desviarme de los objetivos.
 
-La estructura inicial del prototipo, algunos ejemplos de código y parte de esta documentación se generaron con ayuda de ChatGPT a partir de la propuesta Food For My Soul.
+La herramienta me ayudó a dividir los requisitos en tareas, entender alternativas sencillas y proponer y editar código para componentes, rutas, formularios y consultas a la API. También fue útil para revisar errores de compilación y redactar la documentación técnica de forma profesional y no improvisada.
 
-
-## Verificación pendiente del estudiante
-
-Antes de entregar o publicar:
-
-1. Instalar dependencias y ejecutar frontend y backend por separado.
-2. Abrir `/api/health`, `/api/recipes` y `/api/recipes/1`; confirmar que las respuestas coinciden con `docs/api.md`.
-3. Probar una receta inexistente y una ruta inexistente; observar el estado `404`.
-4. Abrir el catálogo, entrar a una receta, volver al catálogo y probar una URL inválida.
-5. Apagar el backend y comprobar el fallback del cliente.
-6. Leer cada archivo y poder explicar componentes, interfaces, servicio, rutas, controlador, middleware y datos mock.
-7. Cambiar y validar el contenido y diseño para que correspondan con la versión propia del proyecto.
+De forma iterativa se compararon las propuestas con la aplicación en ejecución, y pedí correcciones cuando un resultado no correspondía con lo que buscaba desarrollar. En [estado-del-proyecto.md](estado-del-proyecto.md) especifico las funciones disponibles de las que siguen pendientes.
