@@ -1,30 +1,26 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, catchError, map, of } from 'rxjs';
-import { Recipe } from '../models/recipe.interface';
-import { MOCK_RECIPES } from '../data/mock-recipes';
-
-interface ApiListResponse { data: Recipe[]; }
-interface ApiRecipeResponse { data: Recipe; }
+import { Observable, map } from 'rxjs';
+import { Recipe, RecipeInput } from '../models/recipe.interface';
 
 @Injectable({ providedIn: 'root' })
 export class RecipeService {
   private readonly apiUrl = 'http://localhost:3000/api/recipes';
-
   constructor(private readonly http: HttpClient) {}
 
   getAll(): Observable<Recipe[]> {
-    return this.http.get<ApiListResponse>(this.apiUrl).pipe(
-      map((response) => response.data),
-      // Fallback deliberado para facilitar la revisión visual sin iniciar el backend.
-      catchError(() => of(MOCK_RECIPES)),
-    );
+    return this.http.get<{ data: Recipe[] }>(this.apiUrl).pipe(map(response => response.data));
   }
-
-  getById(id: string): Observable<Recipe | undefined> {
-    return this.http.get<ApiRecipeResponse>(`${this.apiUrl}/${encodeURIComponent(id)}`).pipe(
-      map((response) => response.data),
-      catchError(() => of(MOCK_RECIPES.find((recipe) => recipe.id === id))),
-    );
+  getById(id: string): Observable<Recipe> {
+    return this.http.get<{ data: Recipe }>(`${this.apiUrl}/${encodeURIComponent(id)}`).pipe(map(response => response.data));
+  }
+  create(recipe: RecipeInput): Observable<Recipe> {
+    return this.http.post<{ data: Recipe }>(this.apiUrl, recipe).pipe(map(response => response.data));
+  }
+  update(id: string, recipe: RecipeInput): Observable<Recipe> {
+    return this.http.put<{ data: Recipe }>(`${this.apiUrl}/${encodeURIComponent(id)}`, recipe).pipe(map(response => response.data));
+  }
+  delete(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${encodeURIComponent(id)}`);
   }
 }

@@ -33,11 +33,12 @@ import { RecipeCardComponent } from '../../components/recipe-card/recipe-card.co
         <button class="button button-dark" type="submit">Buscar</button>
       </form>
 
+      <p class="form-error" role="alert" *ngIf="error">{{ error }}</p>
       <p class="loading-message" *ngIf="loading">Buscando recetas…</p>
       <div class="recipe-grid" *ngIf="!loading && recipes.length">
         <app-recipe-card *ngFor="let recipe of recipes" [recipe]="recipe" />
       </div>
-      <p class="loading-message" *ngIf="!loading && !recipes.length">No hay recetas con ese nombre.</p>
+      <p class="loading-message" *ngIf="!loading && !error && !recipes.length">No hay recetas con ese nombre.</p>
       <p class="mock-note">Contenido de ejemplo para el prototipo; la publicación de recetas está pendiente.</p>
     </section>
   `,
@@ -47,15 +48,16 @@ export class RecipeListComponent implements OnInit {
   allRecipes: Recipe[] = [];
   query = '';
   loading = true;
+  error = '';
 
   constructor(private readonly recipeService: RecipeService) {}
 
   ngOnInit(): void {
-    this.recipeService.getAll().subscribe((recipes) => {
+    this.recipeService.getAll().subscribe({ next: (recipes) => {
       this.allRecipes = recipes;
       this.search();
       this.loading = false;
-    });
+    }, error: () => { this.loading = false; this.error = 'No se pudieron cargar las recetas. Comprueba que la API esté encendida y recarga la página.'; } });
   }
 
   search(): void {

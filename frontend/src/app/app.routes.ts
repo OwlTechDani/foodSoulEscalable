@@ -12,6 +12,7 @@ export const routes: Routes = [
   { path: 'recipes', redirectTo: '', pathMatch: 'full' },
   { path: 'comunidad', component: CommunityComponent, title: 'Comunidad | Food For My Soul' },
   { path: 'publicar', component: PublishComponent, title: 'Publicar | Food For My Soul' },
+  { path: 'recipes/:id/editar', component: PublishComponent, title: 'Editar receta | Food For My Soul' },
   { path: 'ia', component: AiComponent, title: 'IA | Food For My Soul' },
   { path: 'perfil', component: ProfileComponent, title: 'Perfil | Food For My Soul' },
   { path: 'recipes/:id', component: RecipeDetailComponent, title: 'Detalle | Food For My Soul' },

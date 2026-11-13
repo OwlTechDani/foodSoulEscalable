@@ -9,3 +9,5 @@ export interface Recipe {
   ingredients: string[];
   steps: string[];
 }
+
+export type RecipeInput = Omit<Recipe, 'id'>;

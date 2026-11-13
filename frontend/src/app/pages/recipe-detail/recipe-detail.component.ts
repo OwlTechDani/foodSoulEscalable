@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgFor, NgIf } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Recipe } from '../../models/recipe.interface';
 import { RecipeService } from '../../services/recipe.service';
 
@@ -9,7 +9,9 @@ import { RecipeService } from '../../services/recipe.service';
   standalone: true,
   imports: [NgFor, NgIf, RouterLink],
   template: `
-    <section class="detail-page" *ngIf="recipe; else missing">
+    <p class="simple-page" *ngIf="loading">Cargando receta…</p>
+    <p class="simple-page form-error" role="alert" *ngIf="error">{{ error }}</p>
+    <section class="detail-page" *ngIf="recipe">
       <a class="back-link" routerLink="/recipes">← Volver a todas las recetas</a>
       <div class="detail-hero">
         <div class="detail-copy">
@@ -18,7 +20,7 @@ import { RecipeService } from '../../services/recipe.service';
           <p>{{ recipe.description }}</p>
           <span class="detail-author">Una receta de <strong>{{ recipe.author }}</strong></span>
         </div>
-        <img [src]="recipe.imageUrl" [alt]="recipe.title">
+        <img *ngIf="recipe.imageUrl" [src]="recipe.imageUrl" [alt]="recipe.title">
       </div>
       <div class="recipe-content">
         <section><span class="eyebrow">LO QUE VAS A NECESITAR</span><h2>Ingredientes</h2>
@@ -28,18 +30,45 @@ import { RecipeService } from '../../services/recipe.service';
           <ol class="step-list"><li *ngFor="let step of recipe.steps; let i = index"><span>{{ i + 1 }}</span><p>{{ step }}</p></li></ol>
         </section>
       </div>
-      <aside class="future-note"><span>✳</span><p>Los comentarios y la publicación de recetas estarán disponibles en una siguiente etapa del proyecto.</p></aside>
+      <div class="recipe-actions">
+        <a class="button button-dark" [routerLink]="['/recipes', recipe.id, 'editar']">Editar receta</a>
+        <button class="button" type="button" (click)="confirmDelete = true">Eliminar receta</button>
+      </div>
+      <div class="future-note" *ngIf="confirmDelete">
+        <p>¿Eliminar esta receta? Esta acción no se puede deshacer.</p>
+        <button class="button" type="button" [disabled]="deleting" (click)="remove()">{{ deleting ? 'Eliminando…' : 'Confirmar eliminación' }}</button>
+        <button class="button" type="button" [disabled]="deleting" (click)="confirmDelete = false">Cancelar</button>
+      </div>
+      <p class="mock-note">Modo de demostración sin cuentas: cualquier visitante puede editar. Los cambios duran hasta reiniciar el servidor.</p>
     </section>
-    <ng-template #missing><section class="empty-state"><span class="eyebrow">RECETA NO DISPONIBLE</span><h1>No encontramos<br><em>esa receta.</em></h1><a class="button button-dark" routerLink="/recipes">Volver al catálogo</a></section></ng-template>
+
   `,
 })
 export class RecipeDetailComponent implements OnInit {
   recipe?: Recipe;
+  loading = true;
+  error = '';
+  confirmDelete = false;
+  deleting = false;
 
-  constructor(private readonly route: ActivatedRoute, private readonly recipeService: RecipeService) {}
+  constructor(private readonly route: ActivatedRoute, private readonly recipeService: RecipeService, private readonly router: Router) {}
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
-    if (id) this.recipeService.getById(id).subscribe((recipe) => { this.recipe = recipe; });
+    if (!id) { this.loading = false; this.error = 'Falta el identificador de la receta.'; return; }
+    this.recipeService.getById(id).subscribe({
+      next: recipe => { this.recipe = recipe; this.loading = false; },
+      error: response => { this.loading = false; this.error = response.status === 404 ? 'No encontramos esa receta.' : 'No se pudo cargar la receta. Comprueba la conexión con la API.'; },
+    });
+  }
+
+  remove(): void {
+    if (!this.recipe || this.deleting) return;
+    this.deleting = true;
+    this.error = '';
+    this.recipeService.delete(this.recipe.id).subscribe({
+      next: () => { this.router.navigate(['/comunidad']); },
+      error: () => { this.deleting = false; this.error = 'No se pudo eliminar. Vuelve a intentarlo.'; },
+    });
   }
 }

@@ -1,15 +1,16 @@
 import { Component, Input } from '@angular/core';
+import { NgIf } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Recipe } from '../../models/recipe.interface';
 
 @Component({
   selector: 'app-recipe-card',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, NgIf],
   template: `
     <a class="recipe-card" [routerLink]="['/recipes', recipe.id]">
       <div class="card-image-wrap">
-        <img [src]="recipe.imageUrl" [alt]="recipe.title" loading="lazy">
+        <img *ngIf="recipe.imageUrl" [src]="recipe.imageUrl" [alt]="recipe.title" loading="lazy">
         <span class="category-pill">{{ recipe.category }}</span>
       </div>
       <div class="card-copy">

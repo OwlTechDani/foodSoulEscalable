@@ -96,3 +96,13 @@ h1, h2, h3, p { margin-top: 0; }
   .site-footer { padding: 30px 6%; flex-wrap: wrap; gap: 12px; }.site-footer p { order: 3; width: 100%; }.site-footer small { font-size: 8px; }
   .detail-page { padding: 28px 6% 65px; }.detail-hero { grid-template-columns: 1fr; gap: 24px; padding: 28px 0 35px; }.detail-hero img { height: 300px; }.recipe-content { grid-template-columns: 1fr; gap: 35px; }.empty-state { padding: 90px 7%; }
 }
+
+.form-error { color: #923621; line-height: 1.6; }
+.recipe-actions, .pagination { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 28px; }
+.recipe-actions button, .pagination button { border: 1px solid var(--line); font-family: inherit; cursor: pointer; }
+button:disabled { opacity: .55; cursor: not-allowed; }
+.future-note { flex-wrap: wrap; }
+.publish-form .back-link { display: inline-block; margin: 15px; }
+
+.filter-form { flex-wrap: wrap; }
+.filter-form input { padding: 11px 12px; border: 1px solid #d6d2c8; background: #fffdfa; font: inherit; max-width: 100%; }
