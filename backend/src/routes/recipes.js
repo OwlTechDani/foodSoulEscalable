@@ -1,13 +1,9 @@
 const { Router } = require("express");
-const { getRecipes, getRecipeById } = require("../controllers/recipes");
-
+const { getRecipes, getRecipeById, createRecipe, updateRecipe, deleteRecipe } = require("../controllers/recipes");
 const router = Router();
-
-// GET /api/recipes
 router.get("/", getRecipes);
-
-// GET /api/recipes/:id
 router.get("/:id", getRecipeById);
-
-// TODO: cuando exista persistencia, agregar POST/PUT/DELETE con validaciones y autorización.
+router.post("/", createRecipe);
+router.put("/:id", updateRecipe);
+router.delete("/:id", deleteRecipe);
 module.exports = router;
