@@ -38,16 +38,26 @@ npm start
 
 Abre `http://localhost:4200`. El encabezado permite ir a Inicio (`/`), Comunidad (`/comunidad`), Publicar (`/publicar`), IA (`/ia`) y Perfil (`/perfil`). El detalle de una receta está en `/recipes/:id`; `/recipes` vuelve al inicio.
 
-El catálogo utiliza recetas locales de respaldo si la API no responde.
+La API debe estar encendida. Si no responde, la interfaz informa del problema; no simula un guardado exitoso.
 
 ## Funciones disponibles
 
-- Catálogo y búsqueda por nombre en Inicio.
-- Filtro por categoría en Comunidad.
-- Formulario de borrador con validaciones y vista previa en Publicar. No guarda la receta.
-- Detalle con ingredientes y pasos.
-- API JSON de consulta. Consulta [docs/api.md](docs/api.md) para las rutas y ejemplos.
+Consulta, búsqueda, categorías, paginación, publicación, edición y borrado de recetas. El formulario valida sus campos y la API vuelve a validarlos. Los datos duran hasta reiniciar el servidor.
 
-## Estado
+## Verificar
 
-El backend se mantiene como una base inicial de solo lectura. IA y Perfil son páginas informativas; faltan guardado de recetas, persistencia con MongoDB, cuentas y acceso, edición, comentarios, pruebas y despliegue. El detalle está en [docs/estado-del-proyecto.md](docs/estado-del-proyecto.md).
+```bash
+cd backend
+npm test
+```
+
+```bash
+cd frontend
+npm run build
+```
+
+## Estado y arquitectura
+
+Prototipo de demostración sin cuentas ni permisos. MongoDB, comentarios y administración siguen pendientes. IA y Perfil son informativos.
+
+Consulta [el estado y recorrido de revisión](docs/estado-del-proyecto.md), [la API](docs/api.md) y [los principios aplicados](docs/arquitectura.md).
