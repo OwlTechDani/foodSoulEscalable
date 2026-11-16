@@ -22,6 +22,7 @@ Las recetas están en memoria: sobreviven a la navegación y recarga del navegad
 ## Verificación realizada
 
 - Prueba HTTP automatizada con el corredor integrado de Node: CRUD, validaciones, JSON incorrecto, filtros y respuestas 404.
+- Pruebas repetibles de componentes Angular con `npm test` en frontend: crear, editar, borrar, navegación, errores de guardado y filtro desde la segunda página.
 - Compilación de Angular.
 - Recorrido de navegador: crear, editar, cancelar y confirmar borrado, y filtrar.
 - Comprobación móvil a 390 px sin desbordamiento horizontal ni errores de Angular.

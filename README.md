@@ -16,7 +16,7 @@ Aplicación de recetas en desarrollo. Permite consultar un catálogo, buscar por
 
 ## Ejecutar en local
 
-Se recomienda Node.js 20 o 22 y npm. Usa dos terminales:
+Se recomienda Node.js 22.15 o posterior y npm (las pruebas del frontend usan las funciones integradas de Node). Usa dos terminales:
 
 **API**
 
@@ -42,7 +42,7 @@ La API debe estar encendida. Si no responde, la interfaz informa del problema; n
 
 ## Funciones disponibles
 
-Consulta, búsqueda, categorías, paginación, publicación, edición y borrado de recetas. El formulario valida sus campos y la API vuelve a validarlos. Los datos duran hasta reiniciar el servidor.
+Consulta, búsqueda, categorías, paginación, publicación, edición y borrado de recetas. La API escucha únicamente en localhost. El formulario valida sus campos y la API vuelve a validarlos. Los datos duran hasta reiniciar el servidor.
 
 ## Verificar
 
@@ -53,6 +53,7 @@ npm test
 
 ```bash
 cd frontend
+npm test
 npm run build
 ```
 

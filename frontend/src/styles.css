@@ -13,8 +13,6 @@ a { color: inherit; text-decoration: none; }
 .site-header nav a { padding: 8px 0; }
 .site-header nav a.active { color: var(--ink); border-bottom: 1px solid var(--green); }
 .site-header nav a:focus-visible, .button:focus-visible, .recipe-card:focus-visible, .brand:focus-visible { outline: 2px solid var(--orange); outline-offset: 4px; }
-.header-action { border: 1px solid #d6d2c8; border-radius: 999px; padding: 11px 17px; font-size: 11px; font-weight: 600; }
-.header-action span { padding-left: 10px; color: var(--orange); }
 .hero { min-height: 585px; padding: 72px 7.2% 30px; display: grid; grid-template-columns: .92fr 1.08fr; column-gap: 7%; position: relative; }
 .hero-copy { padding-top: 34px; position: relative; z-index: 1; }
 .eyebrow { font-size: 9px; letter-spacing: 1.8px; font-weight: 700; color: var(--green); }
@@ -66,11 +64,6 @@ h1, h2, h3, p { margin-top: 0; }
 .form-field input, .form-field textarea, .form-field select, .filter-form select { border: 1px solid #d6d2c8; border-radius: 5px; padding: 11px 12px; background: #fffdfa; color: var(--ink); font: inherit; font-size: 12px; }
 .form-field input:focus-visible, .form-field textarea:focus-visible, .form-field select:focus-visible, .filter-form select:focus-visible, .search-form input:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; }
 .publish-form .button:disabled { opacity: .55; cursor: not-allowed; }
-.draft-preview { max-width: 710px; margin-top: 42px; padding: 28px; border: 1px solid var(--line); background: var(--paper); }
-.draft-preview h2 { font: 500 32px 'Playfair Display', serif; margin: 12px 0; }
-.draft-preview h3 { font: 500 22px 'Playfair Display', serif; margin: 22px 0 8px; }
-.draft-preview p { color: var(--muted); font-size: 12px; line-height: 1.7; }
-.draft-lines { white-space: pre-line; }
 .site-footer { background: #e9e5dc; padding: 38px 7.2%; display: flex; align-items: center; justify-content: space-between; color: var(--muted); }
 .footer-brand { color: var(--ink); }.site-footer p { font: italic 14px 'Playfair Display', serif; margin: 0; }.site-footer small { font-size: 9px; }
 .detail-page { padding: 40px 10% 85px; min-height: 70vh; }
