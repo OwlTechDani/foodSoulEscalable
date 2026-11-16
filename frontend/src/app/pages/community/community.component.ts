@@ -13,7 +13,7 @@ import { RecipeCardComponent } from '../../components/recipe-card/recipe-card.co
     <section class="simple-page">
       <span class="eyebrow">RECETAS DE LA COMUNIDAD</span>
       <h1>Comunidad<em>.</em></h1>
-      <p class="page-lead">Explora las recetas disponibles. En esta etapa son ejemplos; las cuentas y los comentarios aún están pendientes.</p>
+      <p class="page-lead">Descubre recetas compartidas por otras personas y encuentra tu próxima preparación.</p>
 
       <form class="filter-form" (ngSubmit)="filterRecipes()">
         <label for="community-search">Buscar por nombre</label>
@@ -23,6 +23,8 @@ import { RecipeCardComponent } from '../../components/recipe-card/recipe-card.co
           <option value="">Todas las categorías</option>
           <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
         </select>
+        <label for="type-filter">Tipo</label><select id="type-filter" name="type" [(ngModel)]="selectedType"><option value="">Todos los tipos</option><option *ngFor="let type of types" [value]="type">{{ type }}</option></select>
+        <label for="tag-filter">Etiqueta</label><select id="tag-filter" name="tag" [(ngModel)]="selectedTag"><option value="">Todas las etiquetas</option><option *ngFor="let tag of tags" [value]="tag">{{ tag }}</option></select>
         <button class="button button-dark" type="submit">Aplicar filtro</button>
       </form>
 
@@ -45,6 +47,7 @@ export class CommunityComponent implements OnInit {
   recipes: Recipe[] = [];
   categories: string[] = [];
   selectedCategory = '';
+  selectedType = ''; selectedTag = ''; types: string[] = []; tags: string[] = [];
   query = '';
   page = 1;
   pageSize = 6;
@@ -64,6 +67,8 @@ export class CommunityComponent implements OnInit {
           this.categories.push(recipe.category);
         }
       }
+      this.types = [...new Set(recipes.map(r => r.recipeType).filter(Boolean))];
+      this.tags = [...new Set(recipes.flatMap(r => r.tags || []))];
       this.filterRecipes();
       this.loading = false;
     }, error: () => { this.loading = false; this.error = 'No se pudieron cargar las recetas. Comprueba que la API esté encendida y recarga la página.'; } });
@@ -72,7 +77,7 @@ export class CommunityComponent implements OnInit {
   filterRecipes(): void {
     this.page = 1;
     this.recipes = this.allRecipes.filter((recipe) =>
-      (!this.selectedCategory || recipe.category === this.selectedCategory) && recipe.title.toLowerCase().includes(this.query.trim().toLowerCase())
+      (!this.selectedCategory || recipe.category === this.selectedCategory) && (!this.selectedType || recipe.recipeType === this.selectedType) && (!this.selectedTag || recipe.tags.includes(this.selectedTag)) && recipe.title.toLowerCase().includes(this.query.trim().toLowerCase())
     );
   }
 }

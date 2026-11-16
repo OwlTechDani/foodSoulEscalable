@@ -1,3 +1,4 @@
+import { AdminComponent } from './pages/admin/admin.component';
 import { Routes } from '@angular/router';
 import { RecipeListComponent } from './pages/recipe-list/recipe-list.component';
 import { RecipeDetailComponent } from './pages/recipe-detail/recipe-detail.component';
@@ -13,6 +14,7 @@ export const routes: Routes = [
   { path: 'comunidad', component: CommunityComponent, title: 'Comunidad | Food For My Soul' },
   { path: 'publicar', component: PublishComponent, title: 'Publicar | Food For My Soul' },
   { path: 'recipes/:id/editar', component: PublishComponent, title: 'Editar receta | Food For My Soul' },
+  { path: 'admin', component: AdminComponent, title: 'Administración | Food For My Soul' },
   { path: 'ia', component: AiComponent, title: 'IA | Food For My Soul' },
   { path: 'perfil', component: ProfileComponent, title: 'Perfil | Food For My Soul' },
   { path: 'recipes/:id', component: RecipeDetailComponent, title: 'Detalle | Food For My Soul' },

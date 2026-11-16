@@ -39,7 +39,6 @@ import { RecipeCardComponent } from '../../components/recipe-card/recipe-card.co
         <app-recipe-card *ngFor="let recipe of recipes" [recipe]="recipe" />
       </div>
       <p class="loading-message" *ngIf="!loading && !error && !recipes.length">No hay recetas con ese nombre.</p>
-      <p class="mock-note">Contenido de ejemplo para el prototipo; la publicación de recetas está pendiente.</p>
     </section>
   `,
 })

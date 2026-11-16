@@ -25,7 +25,9 @@ const { RecipeDetailComponent } = await import('../src/app/pages/recipe-detail/r
 const { CommunityComponent } = await import('../src/app/pages/community/community.component.ts');
 const { routes } = await import('../src/app/app.routes.ts');
 
-const recipe = { id: 'test', title: 'Pan con tomate', description: 'Preparación sencilla', author: 'Prueba', category: 'Cena', prepMinutes: 5, imageUrl: '', ingredients: ['Pan'], steps: ['Servir'] };
+const recipe = { id: 'test', title: 'Pan con tomate', description: 'Preparación sencilla', author: 'Prueba', owner: 'user', recipeType: 'Plato principal', tags: [], comments: [], category: 'Cena', prepMinutes: 5, imageUrl: '', ingredients: ['Pan'], steps: ['Servir'] };
+const auth = { user: { id: 'user', role: 'user' }, canManage: owner => owner === 'user' };
+const catalog = { getAll: () => of([]) };
 const route = id => ({ snapshot: { paramMap: { get: () => id } } });
 
 test('publicar y editar conservan el contenido y navegan al detalle correcto', () => {
@@ -37,7 +39,7 @@ test('publicar y editar conservan el contenido y navegan al detalle correcto', (
     create: input => { writes.push(input); return of({ ...input, id: recipe.id }); },
     update: (id, input) => { assert.equal(id, recipe.id); writes.push(input); return of({ ...input, id }); },
   };
-  const form = new PublishComponent(service, route(null), router);
+  const form = new PublishComponent(service, route(null), router, auth, catalog);
   form.draft = { ...recipe, ingredients: 'Pan\n\nTomate', steps: 'Cortar\nServir' };
   form.save({ invalid: true });
   assert.equal(writes.length, 0);
@@ -45,7 +47,7 @@ test('publicar y editar conservan el contenido y navegan al detalle correcto', (
   assert.deepEqual(writes[0].ingredients, ['Pan', 'Tomate']);
   assert.deepEqual(navigations[0], ['/recipes', recipe.id]);
   assert.equal(routes.find(item => item.path === 'recipes/:id').component, RecipeDetailComponent);
-  const edit = new PublishComponent(service, route(recipe.id), router);
+  const edit = new PublishComponent(service, route(recipe.id), router, auth, catalog);
   edit.ngOnInit();
   assert.equal(edit.draft.title, recipe.title);
   edit.draft.title = 'Pan editado';
@@ -54,7 +56,7 @@ test('publicar y editar conservan el contenido y navegan al detalle correcto', (
   assert.deepEqual(navigations[1], ['/recipes', recipe.id]);
   const detail = new RecipeDetailComponent(route(recipe.id), {
     getById: () => of(recipe), delete: id => { assert.equal(id, recipe.id); return of(undefined); },
-  }, router);
+  }, router, auth);
   detail.ngOnInit();
   detail.remove();
   assert.deepEqual(navigations[2], ['/comunidad']);
@@ -76,10 +78,11 @@ test('filtrar desde la segunda página regresa a la primera', () => {
 });
 
 test('un guardado fallido permite reintentar y no navega', () => {
-  const form = new PublishComponent({ create: () => throwError(() => ({ status: 400 })) }, route(null), {
+  const form = new PublishComponent({ create: () => throwError(() => ({ status: 400, error: { errors: { imageUrl: 'Imagen inválida' } } })) }, route(null), {
     navigate: () => assert.fail('No debe navegar cuando el guardado falla'),
-  });
+  }, auth, catalog);
   form.save({ invalid: false });
   assert.equal(form.saving, false);
   assert.ok(form.error);
+  assert.equal(form.fieldErrors.imageUrl, 'Imagen inválida');
 });
