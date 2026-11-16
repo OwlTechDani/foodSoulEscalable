@@ -6,7 +6,6 @@ class Server {
     this.app = express();
     this.port = process.env.PORT || 3000;
 
-    // Middleware básico: permite JSON y peticiones desde el servidor Angular local.
     this.app.use(cors({ origin: process.env.CORS_ORIGIN || "http://localhost:4200" }));
     this.app.use(express.json());
 
@@ -14,6 +13,7 @@ class Server {
     this.app.use((err, _req, res, _next) => {
       if (err.type === "entity.parse.failed") return res.status(400).json({ error: "El cuerpo debe ser JSON válido" });
       if (err.type === "entity.too.large") return res.status(413).json({ error: "La receta es demasiado grande" });
+      if (err.code === 11000) return res.status(409).json({ error: 'El correo o elemento ya existe' });
       console.error(err);
       res.status(500).json({ error: "No se pudo procesar la petición" });
     });
@@ -24,10 +24,10 @@ class Server {
       res.status(200).json({ status: "ok" });
     });
 
-    // Cada módulo de rutas agrupa endpoints relacionados.
     this.app.use("/api/recipes", require("../routes/recipes"));
+    this.app.use("/api/auth", require("../routes/auth"));
+    this.app.use("/api/admin", require("../routes/admin"));
 
-    // Respuesta JSON consistente para rutas desconocidas.
     this.app.use((_req, res) => {
       res.status(404).json({ error: "Ruta no encontrada" });
     });

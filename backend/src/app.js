@@ -1,7 +1,4 @@
-// Punto de entrada: carga configuración, prepara la app Express y arranca el servidor.
-require("dotenv").config();
-
-const Server = require("./models/server");
-
-const server = new Server();
-server.listen();
+require('dotenv').config();
+const connect = require('./database/config');
+const Server = require('./models/server');
+connect().then(() => new Server().listen()).catch(error => { console.error(error.message); process.exitCode = 1; });
