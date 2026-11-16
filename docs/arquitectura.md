@@ -1,11 +1,17 @@
-# Organización y principios
+# Arquitectura
 
-Se conserva Angular 18 y el backend Express en JavaScript existente. No se agregaron dependencias.
+Se conserva Angular 18 y la estructura Express existente. Las dependencias agregadas y autorizadas son Mongoose y jsonwebtoken. Docker ejecuta MongoDB 8.0 en un servicio independiente.
 
-- **Separación de responsabilidades:** las rutas declaran endpoints; los controladores validan y coordinan respuestas; `data/recipes.js` mantiene los datos temporales; `models/server.js` configura Express; `app.js` inicia el servidor.
-- **Responsabilidad única:** cada página atiende un recorrido y `RecipeService` centraliza el acceso HTTP. Las vistas no escriben directamente sobre los datos del backend.
-- **Reutilización:** un formulario sirve para crear y editar; las tarjetas se comparten entre Inicio y Comunidad. La validación y normalización de POST y PUT usan funciones comunes dentro del controlador.
-- **Encapsulamiento y tipos:** se conserva la clase Server. Angular usa interfaces para los datos de recetas y dependencias privadas por constructor.
-- **Proporción:** no se crean carpetas de base de datos, helpers de JWT ni capas adicionales sin una necesidad implementada. La futura conexión MongoDB deberá quedar separada del servidor y los controladores.
+- `backend/src/app.js`: carga dotenv, conecta MongoDB y arranca el servidor.
+- `database/config.js`: conexión y catálogos iniciales, sin usuarios ni recetas precargados.
+- `models/`: usuarios, recetas, comentarios integrados en la receta, catálogos y servidor.
+- `routes/`: endpoints; `controllers/`: validación y coordinación de respuestas.
+- `middleware/auth.js`: verifica JWT, estado actual de la cuenta y permisos de administrador.
+- `helpers/password.js`: protege y comprueba contraseñas usando crypto de Node.
+- `helpers/async.js`: envía los errores de las operaciones asíncronas al manejador de Express.
+- `frontend/src/app/services/`: acceso HTTP y estado de sesión mediante observables.
+- `pages/`: Inicio, Comunidad, Publicar/Editar, Perfil, Administración y la página pendiente de IA.
 
-La API todavía no identifica usuarios. El ejemplo de autenticación JWT del documento de principios no equivale a una funcionalidad disponible en esta etapa.
+El formulario de recetas se reutiliza para crear y editar. Las tarjetas se comparten entre catálogo y perfil. La autorización siempre se verifica en el servidor; ocultar botones es únicamente una ayuda de la interfaz.
+
+La sesión usa JWT en sessionStorage de la pestaña. El servidor guarda una versión de sesión para revocar tokens al salir o desactivar una cuenta. Los secretos quedan fuera de Git. No se implementó la IA ni se agregaron bibliotecas visuales.

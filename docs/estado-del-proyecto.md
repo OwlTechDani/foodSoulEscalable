@@ -1,39 +1,29 @@
 # Estado del proyecto
 
-## Avance de esta etapa
+## Implementado
 
-Se completó el recorrido de gestión de recetas del prototipo: consultar, buscar, filtrar, publicar, editar y eliminar desde Angular y Express. El objetivo solicitado es llegar al 80 %, pero no hay una rúbrica que permita certificar ese porcentaje del MVP: todavía faltan cuentas, permisos, MongoDB, comentarios y administración.
+- Catálogo y detalle públicos con ingredientes, pasos, autor, imagen y clasificación.
+- Búsqueda, filtros combinados por categoría, tipo y etiqueta y paginación.
+- Registro, acceso, cierre de sesión y perfil con recetas propias.
+- Publicación, edición y eliminación con validaciones y permisos de autor.
+- Comentarios con edición y eliminación por su autor; moderación por administrador.
+- Administración de usuarios, roles, estado activo y catálogos de categorías, tipos y etiquetas.
+- Persistencia de cuentas y contenido en MongoDB mediante Docker con volumen propio.
+- Logo del proyecto y footer con redes y contacto ficticio.
+- Estados de carga, errores por campo, confirmaciones de borrado y vista móvil.
 
-## Disponible para revisar
+## Pendiente
 
-- Inicio con búsqueda por nombre y detalle con ingredientes y pasos.
-- Comunidad con búsqueda por nombre, filtro por categoría y paginación local de seis recetas.
-- Publicación con autor, título, descripción, categoría, minutos, ingredientes, pasos e imagen por URL opcional.
-- Validaciones del formulario y validación independiente en el servidor.
-- Edición del contenido con el mismo formulario.
-- Eliminación con confirmación y opción para cancelar.
-- Estados de carga, errores de conexión y respuestas de receta inexistente.
-- API GET, POST, PUT y DELETE con respuestas JSON y códigos HTTP.
+El asistente de IA se conserva como ampliación pendiente. No hay conexión a ningún servicio de IA.
 
-## Límites de la demostración
+## Verificación
 
-Las recetas están en memoria: sobreviven a la navegación y recarga del navegador, pero se reinician al apagar la API. No hay autenticación: cualquier visitante puede modificar cualquier receta. Perfil e IA siguen siendo páginas informativas. No se implementaron JWT ni dependencias nuevas; el Markdown de principios se utilizó como guía para separar responsabilidades, no como instrucción para migrar el backend a TypeScript.
+Las pruebas HTTP usan MongoDB real en una base aislada: registro, contraseñas protegidas, JWT, permisos entre cuentas, comentarios, administración, catálogos en uso, persistencia tras reconectar y revocación de sesiones. Las pruebas de componentes verifican publicación, edición, borrado, navegación y reinicio de página al filtrar.
 
-## Verificación realizada
+Se verificó en navegador el recorrido con dos cuentas, la administración de catálogos, errores por campo, logo, ocho redes del footer y la vista móvil con títulos largos. Las cuentas y recetas temporales de esa revisión se eliminaron. Angular compila correctamente.
 
-- Prueba HTTP automatizada con el corredor integrado de Node: CRUD, validaciones, JSON incorrecto, filtros y respuestas 404.
-- Pruebas repetibles de componentes Angular con `npm test` en frontend: crear, editar, borrar, navegación, errores de guardado y filtro desde la segunda página.
-- Compilación de Angular.
-- Recorrido de navegador: crear, editar, cancelar y confirmar borrado, y filtrar.
-- Comprobación móvil a 390 px sin desbordamiento horizontal ni errores de Angular.
+## Revisión local
 
-## Para revisar la entrega
+Abre http://localhost:4200. Regístrate en Perfil y publica una receta. Para administrar, promueve tu propia cuenta con el comando descrito en README. Los cambios de esta entrega quedan en commits locales hasta que el usuario decida publicarlos.
 
-1. Abrir http://localhost:4200 y buscar una receta en Inicio.
-2. Entrar a Comunidad y combinar nombre y categoría.
-3. Publicar una receta válida: debe abrirse su detalle.
-4. Editarla y comprobar el cambio en el detalle.
-5. Cancelar un borrado y después confirmarlo.
-6. Comprobar que desapareció de Comunidad.
-
-El código de esta etapa queda en commits locales hasta la revisión del usuario.
+Este entorno se prepara para uso local: API y MongoDB solo se publican en el equipo. Un despliegue público requiere configurar HTTPS, secretos y copias de seguridad propios del servidor.

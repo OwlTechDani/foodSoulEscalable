@@ -1,34 +1,39 @@
 # Food For My Soul
 
-Aplicación de recetas en desarrollo. Permite consultar un catálogo, buscar por nombre y ver el detalle de cada receta.
-
-## Tecnologías
-
-- Interfaz: Angular 18, TypeScript, HTML y CSS.
-- API: Node.js y Express.
-- Datos: recetas de ejemplo en memoria.
-
-## Organización
-
-- `frontend/`: páginas, componentes, rutas y servicio de recetas.
-- `backend/`: servidor Express, rutas, controladores y datos de ejemplo.
-- `docs/`: estado del proyecto y contrato de la API.
+Recetario comunitario con Angular 18, TypeScript, Node.js, Express y MongoDB. Incluye registro, inicio y cierre de sesión, recetas, comentarios, perfil y administración. El asistente de IA es la única función del alcance actual que sigue pendiente.
 
 ## Ejecutar en local
 
-Se recomienda Node.js 22.15 o posterior y npm (las pruebas del frontend usan las funciones integradas de Node). Usa dos terminales:
+Requisitos: Node.js 22.15 o posterior, npm y Docker con soporte de contenedores Linux.
 
-**API**
+Desde la raíz, inicia MongoDB:
+
+```bash
+docker compose up -d mongo
+```
+
+FoodSoul utiliza un contenedor y volumen propios. MongoDB se publica solo en `127.0.0.1:27018`, separado de otros proyectos que usan `27017`.
+
+En una terminal:
 
 ```bash
 cd backend
 npm install
-npm run dev
 ```
 
-Se abre en `http://localhost:3000`. Comprueba `http://localhost:3000/api/health`.
+Copia `.env.example` como `.env` si todavía no existe. Define `JWT_SECRET` con al menos 32 caracteres aleatorios. Puedes generar un valor con:
 
-**Interfaz**
+```bash
+node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"
+```
+
+La copia local de desarrollo ya tiene su `.env` configurado. No publiques ese archivo.
+
+```bash
+npm start
+```
+
+En otra terminal, desde la raíz:
 
 ```bash
 cd frontend
@@ -36,29 +41,44 @@ npm install
 npm start
 ```
 
-Abre `http://localhost:4200`. El encabezado permite ir a Inicio (`/`), Comunidad (`/comunidad`), Publicar (`/publicar`), IA (`/ia`) y Perfil (`/perfil`). El detalle de una receta está en `/recipes/:id`; `/recipes` vuelve al inicio.
+Abre http://localhost:4200. La API escucha en http://localhost:3000.
 
-La API debe estar encendida. Si no responde, la interfaz informa del problema; no simula un guardado exitoso.
+## Uso
 
-## Funciones disponibles
+- Inicio y Comunidad permiten buscar y consultar recetas sin iniciar sesión.
+- En Perfil puedes crear una cuenta, entrar, salir y consultar tus recetas.
+- Para publicar elige categoría, tipo y etiquetas. La imagen es opcional mediante URL.
+- Cada usuario puede editar y borrar sus recetas y sus comentarios.
+- El administrador puede moderar todo el contenido, activar o desactivar cuentas, cambiar roles y gestionar categorías, tipos y etiquetas.
+- Un elemento del catálogo en uso no se puede modificar o borrar hasta actualizar las recetas asociadas.
 
-Consulta, búsqueda, categorías, paginación, publicación, edición y borrado de recetas. La API escucha únicamente en localhost. El formulario valida sus campos y la API vuelve a validarlos. Los datos duran hasta reiniciar el servidor.
+## Crear un administrador
+
+Registra primero tu cuenta desde Perfil. Después, en `backend`, ejecuta:
+
+```bash
+npm run admin -- tu-correo@example.com
+```
+
+Recarga la página y abre Administración desde Perfil. No hay usuarios ni contraseñas predeterminados.
 
 ## Verificar
 
+Con MongoDB de Docker encendido, ejecuta en `backend`:
+
 ```bash
-cd backend
 npm test
 ```
 
+Las pruebas usan una base aislada con nombre aleatorio y la eliminan al finalizar. No usan la base de la aplicación.
+
+En `frontend`:
+
 ```bash
-cd frontend
 npm test
 npm run build
 ```
 
-## Estado y arquitectura
+Para detener MongoDB conservando datos: `docker compose stop`. No borres el volumen si quieres conservar cuentas, recetas y comentarios.
 
-Prototipo de demostración sin cuentas ni permisos. MongoDB, comentarios y administración siguen pendientes. IA y Perfil son informativos.
-
-Consulta [el estado y recorrido de revisión](docs/estado-del-proyecto.md), [la API](docs/api.md) y [los principios aplicados](docs/arquitectura.md).
+Consulta [la API](docs/api.md), [la arquitectura](docs/arquitectura.md) y [el estado](docs/estado-del-proyecto.md).

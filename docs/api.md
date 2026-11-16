@@ -1,36 +1,45 @@
-# API de recetas
+# API
 
-Base: `http://localhost:3000/api`. El servidor solo escucha en localhost. Datos de demostración en memoria, sin usuarios ni permisos.
+Base: `http://localhost:3000/api`. El servidor escucha solo en localhost y responde JSON. Las escrituras requieren `Authorization: Bearer <token>` salvo registro y acceso.
 
-| Método | Ruta | Respuesta |
+| Método | Ruta | Uso |
 | --- | --- | --- |
-| GET | `/health` | 200, estado de la API |
-| GET | `/recipes` | 200, `{ data: Recipe[] }` |
-| GET | `/recipes?q=pasta&category=Comida` | 200, búsqueda por título y categoría combinadas |
-| GET | `/recipes/:id` | 200, `{ data: Recipe }`; 404 si no existe |
-| POST | `/recipes` | 201, `{ data: Recipe }` |
-| PUT | `/recipes/:id` | 200, reemplaza los campos de una receta; 404 si no existe |
-| DELETE | `/recipes/:id` | 204 sin cuerpo; 404 si no existe |
+| GET | `/health` | Estado del servidor |
+| POST | `/auth/register` | Nombre, correo y contraseña; devuelve usuario y JWT |
+| POST | `/auth/login` | Correo y contraseña; devuelve usuario y JWT |
+| GET | `/auth/me` | Cuenta actual |
+| POST | `/auth/logout` | Invalida las sesiones de la cuenta |
+| GET | `/recipes` | Lista pública, sin comentarios |
+| GET | `/recipes/:id` | Detalle y comentarios públicos |
+| POST | `/recipes` | Crear receta con autor de la sesión |
+| PUT | `/recipes/:id` | Editar receta propia o como administrador |
+| DELETE | `/recipes/:id` | Borrar receta y sus comentarios |
+| POST | `/recipes/:id/comments` | Comentar con `{ text }` |
+| PUT | `/recipes/:id/comments/:commentId` | Editar comentario propio o como administrador |
+| DELETE | `/recipes/:id/comments/:commentId` | Borrar comentario propio o como administrador |
+| GET | `/admin/catalog` | Catálogos públicos |
+| POST | `/admin/catalog` | Administrador: crear `{ kind, name }` |
+| PUT | `/admin/catalog/:id` | Administrador: modificar un elemento sin referencias |
+| DELETE | `/admin/catalog/:id` | Administrador: eliminar un elemento sin referencias |
+| GET | `/admin/users` | Administrador: listar usuarios sin contraseñas |
+| PUT | `/admin/users/:id` | Administrador: cambiar `{ active, role }` de otra cuenta |
 
-POST y PUT reciben JSON con `title`, `description`, `author`, `category`, `prepMinutes`, `ingredients` y `steps`. `imageUrl` es opcional. El identificador lo genera el servidor y no cambia al editar.
+Las listas y detalles usan `{ data }`. Registro y acceso devuelven `{ user, token }`. Los identificadores son cadenas UUID.
 
-Ejemplo:
+`GET /recipes` admite `q`, `category`, `type`, `tag` y `owner`. En Comunidad los filtros se combinan y la interfaz pagina seis recetas por vista.
 
-```json
-{
-  "title": "Pan con tomate",
-  "description": "Una preparación sencilla para compartir.",
-  "author": "Cocina local",
-  "category": "Cena",
-  "prepMinutes": 10,
-  "imageUrl": "",
-  "ingredients": ["Pan", "Tomate"],
-  "steps": ["Cortar el tomate", "Servir sobre el pan"]
-}
-```
+## Recetas
 
-Textos sin espacios vacíos: título mínimo 3, descripción 10, autor y categoría 2 caracteres. Los minutos deben ser enteros entre 1 y 1440. Ingredientes y pasos requieren al menos una cadena no vacía. Categorías permitidas: Desayuno, Comida, Vegetariana, Cena y Postre. La imagen es opcional; si se proporciona, debe ser una URL válida con protocolo HTTP o HTTPS y se guarda normalizada.
+POST y PUT reciben `title` (3–120 caracteres), `description` (mínimo 10), `category`, `recipeType`, `tags` (arreglo), `prepMinutes` (entero 1–1440), `ingredients` y `steps` (arreglos de texto no vacío). `imageUrl` es opcional y se valida y normaliza con URL de Node. Categorías, tipos y etiquetas deben existir en sus catálogos. El servidor asigna autor y propietario; no confía en los enviados por el cliente.
 
-Campos inválidos: 400 con `{ error, errors }`, donde `errors` relaciona campos con mensajes. JSON mal formado: 400; cuerpo demasiado grande: 413; error inesperado: 500. Las escrituras no generan recetas locales de respaldo si la API falla.
+Los comentarios aceptan de 1 a 2000 caracteres. El registro requiere nombre de 2–80 caracteres, correo válido y contraseña de 8–128 caracteres. Las contraseñas se guardan con scrypt y sal aleatoria. Los JWT vencen en ocho horas; cerrar sesión o desactivar una cuenta invalida sus tokens anteriores.
 
-Configuración: `PORT` (3000 por defecto) y `CORS_ORIGIN` (http://localhost:4200 por defecto), mediante dotenv. Referencia en `backend/.env.example`.
+## Respuestas
+
+- 200: consulta o edición; 201: creación; 204: eliminación o cierre de sesión.
+- 400: datos inválidos; recetas incluyen `{ error, errors }` con mensajes por campo.
+- 401: sesión ausente, vencida o inválida; 403: falta de permiso.
+- 404: recurso inexistente; 409: correo repetido, catálogo repetido o en uso.
+- 413: cuerpo demasiado grande; 429: demasiados intentos de acceso o registro; 500: fallo inesperado.
+
+La protección de intentos permite 30 solicitudes de registro o acceso por minuto para esta aplicación local. No sustituye la configuración necesaria para un despliegue público.
