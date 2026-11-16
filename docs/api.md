@@ -1,6 +1,6 @@
 # API de recetas
 
-Base: `http://localhost:3000/api`. Datos de demostración en memoria, sin usuarios ni permisos.
+Base: `http://localhost:3000/api`. El servidor solo escucha en localhost. Datos de demostración en memoria, sin usuarios ni permisos.
 
 | Método | Ruta | Respuesta |
 | --- | --- | --- |
@@ -29,7 +29,7 @@ Ejemplo:
 }
 ```
 
-Textos sin espacios vacíos: título mínimo 3, descripción 10, autor y categoría 2 caracteres. Los minutos deben ser enteros entre 1 y 1440. Ingredientes y pasos requieren al menos una cadena no vacía. La imagen debe empezar por http:// o https://.
+Textos sin espacios vacíos: título mínimo 3, descripción 10, autor y categoría 2 caracteres. Los minutos deben ser enteros entre 1 y 1440. Ingredientes y pasos requieren al menos una cadena no vacía. Categorías permitidas: Desayuno, Comida, Vegetariana, Cena y Postre. La imagen es opcional; si se proporciona, debe ser una URL válida con protocolo HTTP o HTTPS y se guarda normalizada.
 
 Campos inválidos: 400 con `{ error, errors }`, donde `errors` relaciona campos con mensajes. JSON mal formado: 400; cuerpo demasiado grande: 413; error inesperado: 500. Las escrituras no generan recetas locales de respaldo si la API falla.
 

@@ -34,7 +34,7 @@ class Server {
   }
 
   listen() {
-    return this.app.listen(this.port, () => {
+    return this.app.listen(this.port, "localhost", () => {
       console.log(`Food For My Soul API escuchando en http://localhost:${this.port}`);
     });
   }

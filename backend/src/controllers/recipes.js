@@ -1,13 +1,16 @@
 const recipes = require("../data/recipes");
 const { randomUUID } = require("node:crypto");
 
-// La API usa datos de demostración en memoria hasta incorporar MongoDB.
+// shortcut: datos en memoria para la demostración local; usar MongoDB antes de guardar contenido real.
 function validateRecipe(body) {
   const errors = {};
-  for (const [field, min] of [["title", 3], ["description", 10], ["author", 2], ["category", 2]]) {
+  for (const [field, min] of [["title", 3], ["description", 10], ["author", 2]]) {
     if (typeof body[field] !== "string" || body[field].trim().length < min) {
       errors[field] = `Escribe al menos ${min} caracteres.`;
     }
+  }
+  if (!["Desayuno", "Comida", "Vegetariana", "Cena", "Postre"].includes(body.category)) {
+    errors.category = "Selecciona una categoría disponible.";
   }
   if (!Number.isInteger(body.prepMinutes) || body.prepMinutes < 1 || body.prepMinutes > 1440) {
     errors.prepMinutes = "Indica un número entero entre 1 y 1440.";
@@ -17,8 +20,15 @@ function validateRecipe(body) {
       errors[field] = "Agrega al menos una línea de texto válida.";
     }
   }
-  if (body.imageUrl !== undefined && (typeof body.imageUrl !== "string" || (body.imageUrl && !/^https?:\/\//i.test(body.imageUrl)))) {
-    errors.imageUrl = "Usa una dirección http o https.";
+  if (body.imageUrl !== undefined && body.imageUrl !== "") {
+    try {
+      const url = new URL(body.imageUrl);
+      if (typeof body.imageUrl !== "string" || !["http:", "https:"].includes(url.protocol) || !url.hostname) {
+        errors.imageUrl = "Usa una dirección http o https válida.";
+      }
+    } catch {
+      errors.imageUrl = "Usa una dirección http o https válida.";
+    }
   }
   return errors;
 }
@@ -27,7 +37,7 @@ function recipeData(body) {
   return {
     title: body.title.trim(), description: body.description.trim(),
     author: body.author.trim(), category: body.category.trim(),
-    prepMinutes: body.prepMinutes, imageUrl: (body.imageUrl || "").trim(),
+    prepMinutes: body.prepMinutes, imageUrl: body.imageUrl ? new URL(body.imageUrl).href : "",
     ingredients: body.ingredients.map(item => item.trim()),
     steps: body.steps.map(item => item.trim()),
   };
