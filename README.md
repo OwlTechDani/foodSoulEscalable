@@ -1,6 +1,6 @@
 # Food For My Soul
 
-Recetario comunitario con Angular 18, TypeScript, Node.js, Express y MongoDB. Incluye registro, inicio y cierre de sesión, recetas, comentarios, perfil y administración. El asistente de IA es la única función del alcance actual que sigue pendiente.
+Recetario comunitario con Angular 18, TypeScript, Node.js, Express y MongoDB. Incluye registro, inicio y cierre de sesión, recetas, comentarios, perfil y administración. Bot de ayuda con respuestas programadas, sin IA ni almacenamiento de conversaciones.
 
 ## Ejecutar en local
 
@@ -51,6 +51,10 @@ Abre http://localhost:4200. La API escucha en http://localhost:3000.
 - Cada usuario puede editar y borrar sus recetas y sus comentarios.
 - El administrador puede moderar todo el contenido, activar o desactivar cuentas, cambiar roles y gestionar categorías, tipos y etiquetas.
 - Un elemento del catálogo en uso no se puede modificar o borrar hasta actualizar las recetas asociadas.
+
+## Bot de ayuda
+
+En Bot, pulsa Iniciar y elige una opción de navegación, contacto o sugerencia de comida. Consulta los tipos del catálogo y elige al azar una receta del tipo seleccionado. Informa si no hay resultados o falla la API y se despide al pulsar No necesito más ayuda. No guarda historial ni contexto; al salir de la página se reinicia. La ruta anterior `/ia` redirige a `/bot`.
 
 ## Crear un administrador
 

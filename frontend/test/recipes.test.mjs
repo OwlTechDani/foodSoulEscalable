@@ -4,7 +4,7 @@ import { registerHooks } from 'node:module';
 import { readFileSync } from 'node:fs';
 import ts from 'typescript';
 import '@angular/compiler';
-import { of, throwError } from 'rxjs';
+import { of, throwError, Subject } from 'rxjs';
 
 // Carga los componentes TypeScript reales sin crear otro proyecto de pruebas.
 registerHooks({
@@ -85,4 +85,44 @@ test('un guardado fallido permite reintentar y no navega', () => {
   assert.equal(form.saving, false);
   assert.ok(form.error);
   assert.equal(form.fieldErrors.imageUrl, 'Imagen inválida');
+});
+
+const { BotComponent } = await import('../src/app/pages/bot/bot.component.ts');
+test('bot: inicio, ayuda y despedida sin conservar contexto', () => {
+  const bot = new BotComponent({getAll: () => of([])}, {getAll: () => of([])});
+  assert.equal(bot.started, false);
+  bot.start(); assert.match(bot.message, /Hola/);
+  bot.help('publish'); assert.equal(bot.destination, '/publicar');
+  bot.help('search'); assert.equal(bot.destination, '/');
+  bot.help('contact'); assert.match(bot.message, /contacto@example.com/);
+  bot.end(); assert.equal(bot.started, false); assert.match(bot.message, /Hasta pronto/);
+  bot.start(); assert.equal(bot.destination, ''); assert.equal(bot.suggestion, undefined);
+  assert.equal(new BotComponent({}, {}).message, '');
+});
+test('bot: consulta tipos y sugiere solo una receta del tipo elegido', () => {
+  const bot = new BotComponent({getAll: () => of([{kind:'type',name:'Plato principal'},{kind:'type',name:'Acompañamiento'},{kind:'category',name:'Cena'}])}, {
+    getAll: type => { assert.equal(type, 'Plato principal'); return of([{...recipe,id:'a'},{...recipe,id:'b'},{...recipe,id:'c',recipeType:'Acompañamiento'}]); },
+  });
+  bot.start(); bot.chooseType(); assert.equal(bot.types.length, 2);
+  const random = Math.random;
+  try { Math.random = () => 0.99; bot.suggest('Plato principal'); assert.equal(bot.suggestion.id, 'b'); }
+  finally { Math.random = random; }
+  assert.equal(bot.loading, false);
+});
+test('bot: sin resultados, 404 y error de conexión', () => {
+  const bot = new BotComponent({getAll: () => of([])}, {getAll: () => of([])});
+  bot.start(); bot.chooseType(); assert.match(bot.message, /No encontré tipos/);
+  bot.suggest('Plato principal'); assert.match(bot.message, /No encontré recetas/);
+  for (const status of [404, 0]) {
+    const failed = new BotComponent({getAll: () => throwError(() => ({status}))}, {getAll: () => throwError(() => ({status}))});
+    failed.start(); failed.chooseType(); assert.equal(failed.loading, false); assert.match(failed.message, status === 404 ? /No encontré/ : /No pude/);
+    failed.suggest('Plato principal'); assert.equal(failed.loading, false); assert.match(failed.message, status === 404 ? /No encontré/ : /No pude/);
+  }
+});
+test('bot: una respuesta tardía no cambia la despedida', () => {
+  const response = new Subject();
+  const bot = new BotComponent({getAll: () => response}, {});
+  bot.start(); bot.chooseType(); bot.end(); const farewell = bot.message;
+  response.next([{kind:'type',name:'Plato principal'}]);
+  assert.equal(bot.message, farewell); assert.deepEqual(bot.types, []);
 });

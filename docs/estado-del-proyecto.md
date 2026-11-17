@@ -12,9 +12,9 @@
 - Logo del proyecto y footer con redes y contacto ficticio.
 - Estados de carga, errores por campo, confirmaciones de borrado y vista móvil.
 
-## Pendiente
+## Bot de ayuda
 
-El asistente de IA se conserva como ampliación pendiente. No hay conexión a ningún servicio de IA.
+La antigua página IA ahora es un bot de opciones: guía de navegación, contacto y una receta aleatoria por tipo del catálogo. Maneja resultados vacíos y errores de API. No usa IA ni guarda conversaciones o contexto.
 
 ## Verificación
 

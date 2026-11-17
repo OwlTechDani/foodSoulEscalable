@@ -115,3 +115,13 @@ button { font-family: inherit; cursor: pointer; }
 
 .card-link { font-size: 13px; font-weight: 600; color: var(--green); }
 .recipe-meta { font-size: 13px; color: var(--muted); }
+
+.bot-page { max-width: 960px; margin: auto; }
+.bot-heading { display: flex; align-items: center; gap: 18px; margin-bottom: 24px; }
+.bot-heading h1 { margin: 0; }
+.bot-options { display: flex; flex-wrap: wrap; gap: 12px; margin: 20px 0; }
+.bot-options .button { border: 1px solid var(--line); text-align: left; }
+.bot-message { line-height: 1.7; max-width: 65ch; margin-top: 24px; }
+.bot-suggestion { border-top: 1px solid var(--line); padding-top: 24px; margin-top: 24px; }
+.bot-end { display: block; margin-top: 32px; border: 1px solid var(--line); }
+@media (max-width: 760px) { .bot-options { flex-direction: column; align-items: stretch; } }

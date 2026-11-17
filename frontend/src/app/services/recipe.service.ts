@@ -9,8 +9,8 @@ export class RecipeService {
   private readonly apiUrl = 'http://localhost:3000/api/recipes';
   constructor(private readonly http: HttpClient, private readonly auth: AuthService) {}
 
-  getAll(): Observable<Recipe[]> {
-    return this.http.get<{ data: Recipe[] }>(this.apiUrl).pipe(map(response => response.data));
+  getAll(type = ''): Observable<Recipe[]> {
+    return this.http.get<{ data: Recipe[] }>(this.apiUrl, { params: { type } }).pipe(map(response => response.data));
   }
   getById(id: string): Observable<Recipe> {
     return this.http.get<{ data: Recipe }>(`${this.apiUrl}/${encodeURIComponent(id)}`).pipe(map(response => response.data));

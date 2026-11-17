@@ -10,8 +10,8 @@ Se conserva Angular 18 y la estructura Express existente. Las dependencias agreg
 - `helpers/password.js`: protege y comprueba contraseñas usando crypto de Node.
 - `helpers/async.js`: envía los errores de las operaciones asíncronas al manejador de Express.
 - `frontend/src/app/services/`: acceso HTTP y estado de sesión mediante observables.
-- `pages/`: Inicio, Comunidad, Publicar/Editar, Perfil, Administración y la página pendiente de IA.
+- `pages/`: Inicio, Comunidad, Publicar/Editar, Perfil, Administración y Bot de ayuda.
 
 El formulario de recetas se reutiliza para crear y editar. Las tarjetas se comparten entre catálogo y perfil. La autorización siempre se verifica en el servidor; ocultar botones es únicamente una ayuda de la interfaz.
 
-La sesión usa JWT en sessionStorage de la pestaña. El servidor guarda una versión de sesión para revocar tokens al salir o desactivar una cuenta. Los secretos quedan fuera de Git. No se implementó la IA ni se agregaron bibliotecas visuales.
+La sesión usa JWT en sessionStorage de la pestaña. El servidor guarda una versión de sesión para revocar tokens al salir o desactivar una cuenta. Los secretos quedan fuera de Git. El bot usa condiciones y opciones en su componente, sin IA ni persistencia de contexto. No se agregaron bibliotecas visuales.
