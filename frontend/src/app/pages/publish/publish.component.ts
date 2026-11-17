@@ -12,8 +12,7 @@ import { RecipeService } from '../../services/recipe.service';
   imports: [NgIf, NgFor, FormsModule, RouterLink],
   template: `
     <section class="simple-page">
-      <span class="eyebrow">COMPARTE TU COCINA</span>
-      <h1>{{ id ? "Editar receta" : "Publicar" }}<em>.</em></h1>
+      <h1>{{ id ? "Editar receta" : "Publicar" }}</h1>
       <p *ngIf="!user">Para compartir una receta, <a routerLink="/perfil">inicia sesión o crea una cuenta</a>.</p>
 
       <p role="alert" class="form-error" *ngIf="error">{{ error }}</p>

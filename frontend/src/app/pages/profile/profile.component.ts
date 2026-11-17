@@ -11,7 +11,7 @@ import { RecipeCardComponent } from '../../components/recipe-card/recipe-card.co
   selector: 'app-profile', standalone: true, imports: [NgIf, NgFor, FormsModule, RouterLink, RecipeCardComponent],
   template: `
     <section class="simple-page">
-      <span class="eyebrow">TU ESPACIO</span><h1>Perfil<em>.</em></h1>
+      <h1>Perfil</h1>
       <p role="alert" class="form-error" *ngIf="error">{{ error }}</p>
       <ng-container *ngIf="user; else access">
         <h2>{{ user.name }}</h2><p>{{ user.email }}</p>

@@ -7,9 +7,8 @@ import { RouterLink } from '@angular/router';
   imports: [RouterLink],
   template: `
     <section class="empty-state">
-      <span class="eyebrow">ERROR 404</span>
-      <h1>Esta mesa<br><em>está vacía.</em></h1>
-      <p>La página que buscas no está aquí. Regresemos a las recetas.</p>
+      <h1>Página no encontrada</h1>
+      <p>Revisa la dirección o vuelve al catálogo.</p>
       <a class="button button-dark" routerLink="/recipes">Ir al catálogo</a>
     </section>
   `,

@@ -12,20 +12,16 @@ import { RecipeCardComponent } from '../../components/recipe-card/recipe-card.co
   template: `
     <section class="hero">
       <div class="hero-copy">
-        <span class="eyebrow"><span class="eyebrow-dot"></span> RECETAS PARA COMPARTIR</span>
-        <h1>Un poco de amor,<br><em>en cada bocado.</em></h1>
-        <p>Ideas sencillas, sabores que reconfortan y recetas hechas para pasar de una cocina a otra.</p>
-        <a class="button button-dark" href="#catalogo">Encuentra algo rico <span aria-hidden="true">↓</span></a>
+        <h1>Recetas para cocinar y compartir</h1>
+        <p>Busca una receta, consulta sus ingredientes o comparte la tuya.</p>
+        <a class="button button-dark" href="#catalogo">Ver recetas</a>
       </div>
       <div class="hero-image" role="img" aria-label="Mesa cálida con platillos para compartir">
       </div>
     </section>
 
     <section id="catalogo" class="catalog-section">
-      <div class="section-heading">
-        <div><span class="eyebrow">UN RECETARIO PARA TODOS</span><h2>Algo rico <em>te espera.</em></h2></div>
-        <p>Recetas sencillas para cocinar a tu ritmo<br>y disfrutar cada momento.</p>
-      </div>
+      <div class="section-heading"><h2>Recetas</h2></div>
 
       <form class="search-form" (ngSubmit)="search()">
         <label for="recipe-search">Buscar por nombre</label>

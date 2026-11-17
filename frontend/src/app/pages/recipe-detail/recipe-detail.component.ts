@@ -18,8 +18,8 @@ import { RecipeService } from '../../services/recipe.service';
       <a class="back-link" routerLink="/recipes">← Volver a todas las recetas</a>
       <div class="detail-hero">
         <div class="detail-copy">
-          <span class="eyebrow">{{ recipe.category }} · {{ recipe.prepMinutes }} MIN</span>
-          <h1>{{ recipe.title }}<em>.</em></h1>
+          <span class="recipe-meta">{{ recipe.category }} · {{ recipe.prepMinutes }} MIN</span>
+          <h1>{{ recipe.title }}</h1>
           <p>{{ recipe.description }}</p>
           <span class="detail-author">Una receta de <strong>{{ recipe.author }}</strong></span>
         </div>
@@ -27,8 +27,8 @@ import { RecipeService } from '../../services/recipe.service';
       </div>
       <p>{{ recipe.recipeType }} · {{ recipe.tags.join(" · ") }}</p>
       <div class="recipe-content">
-        <section><span class="eyebrow">LO QUE VAS A NECESITAR</span><h2>Ingredientes</h2>
-          <ul class="ingredient-list"><li *ngFor="let ingredient of recipe.ingredients"><span>✳</span>{{ ingredient }}</li></ul>
+        <section><h2>Ingredientes</h2>
+          <ul class="ingredient-list"><li *ngFor="let ingredient of recipe.ingredients">{{ ingredient }}</li></ul>
           <section class="comments-section">
         <h2>Comentarios</h2>
         <p *ngIf="!user">Para comentar, <a routerLink="/perfil">inicia sesión</a>.</p>
@@ -48,7 +48,7 @@ import { RecipeService } from '../../services/recipe.service';
         </article>
       </section>
     </section>
-        <section><span class="eyebrow">PASO A PASO</span><h2>Manos a la obra</h2>
+        <section><h2>Preparación</h2>
           <ol class="step-list"><li *ngFor="let step of recipe.steps; let i = index"><span>{{ i + 1 }}</span><p>{{ step }}</p></li></ol>
         </section>
       </div>

@@ -11,8 +11,7 @@ import { RecipeCardComponent } from '../../components/recipe-card/recipe-card.co
   imports: [NgFor, NgIf, FormsModule, RecipeCardComponent],
   template: `
     <section class="simple-page">
-      <span class="eyebrow">RECETAS DE LA COMUNIDAD</span>
-      <h1>Comunidad<em>.</em></h1>
+      <h1>Comunidad</h1>
       <p class="page-lead">Descubre recetas compartidas por otras personas y encuentra tu próxima preparación.</p>
 
       <form class="filter-form" (ngSubmit)="filterRecipes()">

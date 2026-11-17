@@ -17,7 +17,7 @@ import { Recipe } from '../../models/recipe.interface';
         <div class="card-meta"><span>{{ recipe.prepMinutes }} min</span><span>·</span><span>por {{ recipe.author }}</span></div>
         <h3>{{ recipe.title }}</h3>
         <p>{{ recipe.description }}</p>
-        <span class="card-link">Ver receta <span aria-hidden="true">↗</span></span>
+        <span class="card-link">Ver receta</span>
       </div>
     </a>
   `,

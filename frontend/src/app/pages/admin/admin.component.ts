@@ -10,7 +10,7 @@ import { Recipe } from '../../models/recipe.interface';
   selector: 'app-admin', standalone: true, imports: [NgIf, NgFor, FormsModule, RouterLink],
   template: `
     <section class="simple-page">
-      <h1>Administración<em>.</em></h1>
+      <h1>Administración</h1>
       <p *ngIf="!allowed">Esta sección requiere una cuenta de administrador. <a routerLink="/perfil">Ir al perfil</a></p>
       <p role="alert" class="form-error" *ngIf="error">{{ error }}</p>
       <ng-container *ngIf="allowed">
