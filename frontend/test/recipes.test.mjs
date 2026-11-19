@@ -62,19 +62,23 @@ test('publicar y editar conservan el contenido y navegan al detalle correcto', (
   assert.deepEqual(navigations[2], ['/comunidad']);
 });
 
-test('filtrar desde la segunda página regresa a la primera', () => {
-  const recipes = Array.from({ length: 7 }, (_, index) => ({ ...recipe, id: String(index), title: `Receta ${index}` }));
-  const community = new CommunityComponent({ getAll: () => of(recipes) });
+test('Comunidad pide páginas y reinicia la consulta al aplicar filtros', () => {
+  const calls = [];
+  const community = new CommunityComponent({ getPage: (...args) => {
+    calls.push(args);
+    return of({ data: [recipe], page: args[0], total: 7, totalPages: args[1] ? 1 : 2 });
+  } }, catalog);
   community.ngOnInit();
   assert.equal(community.totalPages, 2);
-  community.page = 2;
-  assert.equal(community.visibleRecipes.length, 1);
-  community.query = 'Receta 0';
-  community.selectedCategory = 'Cena';
+  community.loadPage(2);
+  assert.equal(community.page, 2);
+  community.query = 'Pan'; community.selectedCategory = 'Cena';
   community.filterRecipes();
   assert.equal(community.page, 1);
-  assert.equal(community.totalPages, 1);
-  assert.equal(community.visibleRecipes[0].id, '0');
+  assert.deepEqual(calls[2], [1, 'Pan', 'Cena', '', '']);
+  community.query = 'Sin aplicar';
+  community.loadPage(1);
+  assert.equal(calls[3][1], 'Pan');
 });
 
 test('un guardado fallido permite reintentar y no navega', () => {

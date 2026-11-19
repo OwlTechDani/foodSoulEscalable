@@ -45,6 +45,28 @@ test('MongoDB: registro, JWT, persistencia, permisos, comentarios y administraci
     assert.equal((await send('/recipes/' + saved.id, 'PUT', recipe, other.token)).status, 403);
     assert.equal((await send('/recipes/' + saved.id, 'DELETE', undefined, other.token)).status, 403);
     assert.equal((await send('/recipes/' + saved.id, 'PUT', {...recipe,title:'Receta editada'}, owner.token)).status, 200);
+    const Recipe = require('../src/models/recipe');
+    const fixtures = await Recipe.insertMany(Array.from({ length: 7 }, (_, index) => ({
+      ...recipe, title: 'Página ' + index, owner: owner.user.id, author: owner.user.name,
+      recipeType: index === 6 ? 'Acompañamiento' : 'Plato principal',
+    })));
+    const first = await (await send('/recipes?page=1&limit=6&q=P%C3%A1gina')).json();
+    const second = await (await send('/recipes?page=2&limit=6&q=P%C3%A1gina')).json();
+    assert.equal(first.data.length, 6); assert.equal(second.data.length, 1);
+    assert.equal(first.total, 7); assert.equal(first.totalPages, 2);
+    assert.equal(new Set([...first.data, ...second.data].map(r => r.id)).size, 7);
+    const filtered = await (await send('/recipes?page=1&limit=6&q=P%C3%A1gina&type=Acompa%C3%B1amiento&category=Cena&tag=F%C3%A1cil')).json();
+    assert.equal(filtered.total, 1); assert.equal(filtered.data.length, 1);
+    const empty = await (await send('/recipes?page=1&q=NoExiste')).json();
+    assert.equal(empty.total, 0); assert.deepEqual(empty.data, []);
+    const beyond = await (await send('/recipes?page=999&q=P%C3%A1gina')).json();
+    assert.deepEqual(beyond.data, []);
+    for (const query of ['page=0', 'page=-1', 'page=1.5', 'page=abc', 'limit=0', 'limit=101', 'page[]=1', 'page=9007199254740992']) {
+      assert.equal((await send('/recipes?' + query)).status, 400, query);
+    }
+    const literal = await (await send('/recipes?page=1&q=%2E%2A')).json();
+    assert.equal(literal.total, 0);
+    await Recipe.deleteMany({ _id: { $in: fixtures.map(r => r.id) } });
     const commentResponse = await send('/recipes/' + saved.id + '/comments', 'POST', {text:'Buen sabor'}, other.token);
     assert.equal(commentResponse.status, 201);
     const comment = (await commentResponse.json()).data[0];

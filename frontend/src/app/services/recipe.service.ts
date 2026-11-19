@@ -12,6 +12,9 @@ export class RecipeService {
   getAll(type = ''): Observable<Recipe[]> {
     return this.http.get<{ data: Recipe[] }>(this.apiUrl, { params: { type } }).pipe(map(response => response.data));
   }
+  getPage(page: number, q = '', category = '', type = '', tag = '') {
+    return this.http.get<{ data: Recipe[]; page: number; total: number; totalPages: number }>(this.apiUrl, { params: { page, limit: 6, q, category, type, tag } });
+  }
   getById(id: string): Observable<Recipe> {
     return this.http.get<{ data: Recipe }>(`${this.apiUrl}/${encodeURIComponent(id)}`).pipe(map(response => response.data));
   }

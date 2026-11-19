@@ -51,9 +51,20 @@ async function getRecipes(req, res) {
   for (const [query, field] of [['category','category'],['type','recipeType'],['tag','tags'],['owner','owner']]) {
     if (typeof req.query[query] === 'string' && req.query[query]) filter[field] = req.query[query];
   }
-  let data = await Recipe.find(filter).sort({ createdAt: -1 }).select('-comments');
-  if (typeof req.query.q === 'string') data = data.filter(item => item.title.toLowerCase().includes(req.query.q.trim().toLowerCase()));
-  res.json({ data });
+  if (typeof req.query.q === 'string' && req.query.q.trim()) {
+    const text = Array.from(req.query.q.trim(), char => '.*+?^${}()|[]\\'.includes(char) ? '\\' + char : char).join('');
+    filter.title = { $regex: text, $options: 'i' };
+  }
+  const paginated = req.query.page !== undefined || req.query.limit !== undefined;
+  const page = Number(req.query.page ?? 1);
+  const limit = Number(req.query.limit ?? 6);
+  if (paginated && ((req.query.page !== undefined && typeof req.query.page !== 'string') || (req.query.limit !== undefined && typeof req.query.limit !== 'string') || !Number.isSafeInteger(page) || !Number.isSafeInteger(limit) || page < 1 || limit < 1 || limit > 100 || !Number.isSafeInteger((page - 1) * limit))) {
+    return res.status(400).json({ error: 'Página entera desde 1 y límite entero entre 1 y 100' });
+  }
+  const query = Recipe.find(filter).sort({ createdAt: -1, _id: -1 }).select('-comments');
+  if (!paginated) return res.json({ data: await query });
+  const [data, total] = await Promise.all([query.skip((page - 1) * limit).limit(limit), Recipe.countDocuments(filter)]);
+  res.json({ data, page, limit, total, totalPages: Math.max(1, Math.ceil(total / limit)) });
 }
 async function getRecipeById(req, res) {
   const recipe = await Recipe.findById(req.params.id);

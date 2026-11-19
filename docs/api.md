@@ -26,7 +26,7 @@ Base: `http://localhost:3000/api`. El servidor escucha solo en localhost y respo
 
 Las listas y detalles usan `{ data }`. Registro y acceso devuelven `{ user, token }`. Los identificadores son cadenas UUID.
 
-`GET /recipes` admite `q`, `category`, `type`, `tag` y `owner`. En Comunidad los filtros se combinan y la interfaz pagina seis recetas por vista.
+`GET /recipes` admite `q`, `category`, `type`, `tag` y `owner`. Comunidad envía `page` y `limit=6`: MongoDB filtra antes de usar `skip` y `limit`, sin descargar todo el catálogo. La respuesta incluye `{ data, page, limit, total, totalPages }`. `page` debe ser un entero desde 1 y `limit` un entero de 1 a 100; valores inválidos responden 400. Una página fuera de rango devuelve `data: []`. Sin esos parámetros se conserva `{ data }` para bot, perfil y administración.
 
 ## Recetas
 
