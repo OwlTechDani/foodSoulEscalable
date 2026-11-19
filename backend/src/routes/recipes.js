@@ -7,6 +7,8 @@ router.get('/:id', run(c.getRecipeById));
 router.post('/', auth, run(c.createRecipe));
 router.put('/:id', auth, run(c.updateRecipe));
 router.delete('/:id', auth, run(c.deleteRecipe));
+router.put('/:id/like', auth, run(c.setLike));
+router.delete('/:id/like', auth, run(c.setLike));
 router.post('/:id/comments', auth, run(c.addComment));
 router.put('/:id/comments/:commentId', auth, run(c.updateComment));
 router.delete('/:id/comments/:commentId', auth, run(c.deleteComment));

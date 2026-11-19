@@ -67,6 +67,20 @@ test('MongoDB: registro, JWT, persistencia, permisos, comentarios y administraci
     const literal = await (await send('/recipes?page=1&q=%2E%2A')).json();
     assert.equal(literal.total, 0);
     await Recipe.deleteMany({ _id: { $in: fixtures.map(r => r.id) } });
+    const likePath = '/recipes/' + saved.id + '/like';
+    assert.equal((await send(likePath, 'PUT', {})).status, 401);
+    assert.equal((await send('/recipes/missing/like', 'PUT', {}, owner.token)).status, 404);
+    assert.equal((await send('/recipes/missing/like', 'DELETE', undefined, owner.token)).status, 404);
+    for (const token of [owner.token, owner.token, other.token]) {
+      assert.equal((await send(likePath, 'PUT', { likes: ['forged'] }, token)).status, 200);
+    }
+    const liked = (await (await send('/recipes/' + saved.id)).json()).data;
+    assert.deepEqual(new Set(liked.likes), new Set([owner.user.id, other.user.id]));
+    assert.equal(liked.likes.length, 2);
+    await send('/recipes/' + saved.id, 'PUT', {...recipe, likes: []}, owner.token);
+    assert.equal((await Recipe.findById(saved.id)).likes.length, 2);
+    for (let i = 0; i < 2; i++) assert.equal((await send(likePath, 'DELETE', undefined, owner.token)).status, 200);
+    assert.deepEqual((await Recipe.findById(saved.id)).likes, [other.user.id]);
     const commentResponse = await send('/recipes/' + saved.id + '/comments', 'POST', {text:'Buen sabor'}, other.token);
     assert.equal(commentResponse.status, 201);
     const comment = (await commentResponse.json()).data[0];

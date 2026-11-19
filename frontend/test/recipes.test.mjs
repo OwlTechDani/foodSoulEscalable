@@ -141,3 +141,23 @@ test('slider: cambia en ambos sentidos y vuelve al inicio', () => {
   page.changeSlide(1); assert.equal(page.slide, 2);
   page.changeSlide(1); assert.equal(page.slide, 0);
 });
+
+
+test('likes: aplica la respuesta del servidor, bloquea duplicados y permite reintentar', () => {
+  const response = new Subject();
+  const calls = [];
+  const service = { setLike: (id, liked) => { calls.push([id, liked]); return response; } };
+  const detail = new RecipeDetailComponent(route(recipe.id), service, {}, auth);
+  detail.recipe = { ...recipe, likes: [] };
+  detail.toggleLike(); detail.toggleLike();
+  assert.deepEqual(calls, [[recipe.id, true]]);
+  response.next(['user']); response.complete();
+  assert.equal(detail.liked, true); assert.equal(detail.likeBusy, false);
+  service.setLike = (id, liked) => { assert.equal(liked, false); return throwError(() => ({})); };
+  detail.toggleLike();
+  assert.equal(detail.liked, true); assert.equal(detail.likeBusy, false); assert.ok(detail.error);
+  service.setLike = () => of([]);
+  detail.toggleLike(); assert.equal(detail.liked, false);
+  const guest = new RecipeDetailComponent(route(recipe.id), { setLike: () => assert.fail('Requiere sesión') }, {}, {user: undefined});
+  guest.recipe = recipe; guest.toggleLike();
+});

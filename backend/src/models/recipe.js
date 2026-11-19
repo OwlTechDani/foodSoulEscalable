@@ -8,5 +8,5 @@ module.exports = mongoose.model('Recipe', new mongoose.Schema({
   _id: { type: String, default: randomUUID },
   title: String, description: String, imageUrl: String, owner: String, author: String,
   category: String, recipeType: String, tags: [String], prepMinutes: Number,
-  ingredients: [String], steps: [String], comments: [comment],
+  ingredients: [String], steps: [String], comments: [comment], likes: [String],
 }, { timestamps: true, toJSON: { virtuals: true, versionKey: false } }));

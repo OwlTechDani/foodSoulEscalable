@@ -26,6 +26,9 @@ import { RecipeService } from '../../services/recipe.service';
         <img *ngIf="recipe.imageUrl" [src]="recipe.imageUrl" [alt]="recipe.title">
       </div>
       <p>{{ recipe.recipeType }} · {{ recipe.tags.join(" · ") }}</p>
+      <p>{{ recipe.likes?.length || 0 }} Me gusta</p>
+      <button *ngIf="user" class="button" type="button" [attr.aria-pressed]="liked" [disabled]="likeBusy" (click)="toggleLike()">{{ liked ? 'Quitar Me gusta' : 'Me gusta' }}</button>
+      <p *ngIf="!user">Para dar Me gusta, <a routerLink="/perfil">inicia sesión</a>.</p>
       <div class="recipe-content">
         <section><h2>Ingredientes</h2>
           <ul class="ingredient-list"><li *ngFor="let ingredient of recipe.ingredients">{{ ingredient }}</li></ul>
@@ -70,6 +73,8 @@ export class RecipeDetailComponent implements OnInit {
   commentText = ''; editText = ''; editingComment = ''; deletingComment = ''; commentBusy = false;
   get user() { return this.auth.user; }
   canManage(owner: string) { return this.auth.canManage(owner); }
+  likeBusy = false;
+  get liked() { return !!this.user && !!this.recipe?.likes?.includes(this.user.id); }
   loading = true;
   error = '';
   confirmDelete = false;
@@ -86,6 +91,14 @@ export class RecipeDetailComponent implements OnInit {
     });
   }
 
+  toggleLike() {
+    if (!this.recipe || !this.user || this.likeBusy) return;
+    this.likeBusy = true; this.error = '';
+    this.recipeService.setLike(this.recipe.id, !this.liked).subscribe({
+      next: likes => { this.recipe!.likes = likes; this.likeBusy = false; },
+      error: response => { this.likeBusy = false; this.error = response.error?.error || 'No se pudo actualizar Me gusta'; },
+    });
+  }
   addComment() {
     if (!this.recipe || this.commentBusy) return;
     this.commentBusy = true; this.error = '';

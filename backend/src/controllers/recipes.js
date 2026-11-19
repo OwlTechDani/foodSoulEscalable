@@ -90,6 +90,12 @@ async function deleteRecipe(req, res) {
   if (!canManage(req.user, recipe.owner)) return res.status(403).json({ error: 'Solo puedes eliminar tus propias recetas' });
   await recipe.deleteOne(); res.status(204).send();
 }
+async function setLike(req, res) {
+  const update = req.method === 'PUT' ? { $addToSet: { likes: req.user.id } } : { $pull: { likes: req.user.id } };
+  const recipe = await Recipe.findByIdAndUpdate(req.params.id, update, { returnDocument: 'after' }).select('likes');
+  if (!recipe) return res.status(404).json({ error: 'No se encontró la receta' });
+  res.json({ data: recipe.likes });
+}
 async function addComment(req, res) {
   if (typeof req.body?.text !== 'string' || !req.body.text.trim() || req.body.text.length > 2000) return res.status(400).json({ error: 'Escribe un comentario de 1 a 2000 caracteres' });
   const recipe = await Recipe.findByIdAndUpdate(req.params.id, { $push: { comments: { owner: req.user.id, author: req.user.name, text: req.body.text.trim() } } }, { returnDocument: 'after' });
@@ -112,4 +118,4 @@ async function deleteComment(req, res) {
   if (!canManage(req.user, comment.owner)) return res.status(403).json({ error: 'Solo puedes eliminar tus comentarios' });
   await Recipe.updateOne({ _id: recipe.id }, { $pull: { comments: { _id: comment.id } } }); res.status(204).send();
 }
-module.exports = { getRecipes, getRecipeById, createRecipe, updateRecipe, deleteRecipe, addComment, updateComment, deleteComment };
+module.exports = { getRecipes, getRecipeById, createRecipe, updateRecipe, deleteRecipe, setLike, addComment, updateComment, deleteComment };

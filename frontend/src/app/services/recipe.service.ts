@@ -24,6 +24,10 @@ export class RecipeService {
   update(id: string, recipe: RecipeInput): Observable<Recipe> {
     return this.http.put<{ data: Recipe }>(`${this.apiUrl}/${encodeURIComponent(id)}`, recipe, this.auth.options).pipe(map(response => response.data));
   }
+  setLike(id: string, liked: boolean) {
+    const url = `${this.apiUrl}/${encodeURIComponent(id)}/like`;
+    return (liked ? this.http.put<{ data: string[] }>(url, {}, this.auth.options) : this.http.delete<{ data: string[] }>(url, this.auth.options)).pipe(map(response => response.data));
+  }
   addComment(id: string, text: string) { return this.http.post<{data: RecipeComment[]}>(`${this.apiUrl}/${id}/comments`, { text }, this.auth.options).pipe(map(r => r.data)); }
   updateComment(id: string, commentId: string, text: string) { return this.http.put(`${this.apiUrl}/${id}/comments/${commentId}`, { text }, this.auth.options); }
   deleteComment(id: string, commentId: string) { return this.http.delete(`${this.apiUrl}/${id}/comments/${commentId}`, this.auth.options); }

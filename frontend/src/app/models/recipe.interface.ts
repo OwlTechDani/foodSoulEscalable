@@ -7,6 +7,7 @@ export interface Recipe {
   owner: string;
   recipeType: string;
   tags: string[];
+  likes?: string[];
   comments?: RecipeComment[];
   category: string;
   prepMinutes: number;
@@ -14,5 +15,5 @@ export interface Recipe {
   steps: string[];
 }
 
-export type RecipeInput = Omit<Recipe, 'id' | 'author' | 'owner' | 'comments'>;
+export type RecipeInput = Omit<Recipe, 'id' | 'author' | 'owner' | 'comments' | 'likes'>;
 export interface RecipeComment { id: string; owner: string; author: string; text: string; }

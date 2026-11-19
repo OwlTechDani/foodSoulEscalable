@@ -14,6 +14,8 @@ Base: `http://localhost:3000/api`. El servidor escucha solo en localhost y respo
 | POST | `/recipes` | Crear receta con autor de la sesión |
 | PUT | `/recipes/:id` | Editar receta propia o como administrador |
 | DELETE | `/recipes/:id` | Borrar receta y sus comentarios |
+| PUT | `/recipes/:id/like` | Dar Me gusta como usuario de la sesión |
+| DELETE | `/recipes/:id/like` | Retirar mi Me gusta |
 | POST | `/recipes/:id/comments` | Comentar con `{ text }` |
 | PUT | `/recipes/:id/comments/:commentId` | Editar comentario propio o como administrador |
 | DELETE | `/recipes/:id/comments/:commentId` | Borrar comentario propio o como administrador |
@@ -31,6 +33,8 @@ Las listas y detalles usan `{ data }`. Registro y acceso devuelven `{ user, toke
 ## Recetas
 
 POST y PUT reciben `title` (3–120 caracteres), `description` (mínimo 10), `category`, `recipeType`, `tags` (arreglo), `prepMinutes` (entero 1–1440), `ingredients` y `steps` (arreglos de texto no vacío). `imageUrl` es opcional y se valida y normaliza con URL de Node. Categorías, tipos y etiquetas deben existir en sus catálogos. El servidor asigna autor y propietario; no confía en los enviados por el cliente.
+
+Cada receta contiene `likes`, un arreglo de identificadores de usuarios. PUT agrega el usuario autenticado con `$addToSet` y DELETE lo retira con `$pull`: actualizaciones atómicas e idempotentes que evitan duplicados. Devuelven `{ data: likes }`; requieren sesión y responden 404 si la receta no existe. Crear o editar recetas no permite asignar likes.
 
 Los comentarios aceptan de 1 a 2000 caracteres. El registro requiere nombre de 2–80 caracteres, correo válido y contraseña de 8–128 caracteres. Las contraseñas se guardan con scrypt y sal aleatoria. Los JWT vencen en ocho horas; cerrar sesión o desactivar una cuenta invalida sus tokens anteriores.
 
