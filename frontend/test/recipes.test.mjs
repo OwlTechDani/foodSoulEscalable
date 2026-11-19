@@ -126,3 +126,14 @@ test('bot: una respuesta tardía no cambia la despedida', () => {
   response.next([{kind:'type',name:'Plato principal'}]);
   assert.equal(bot.message, farewell); assert.deepEqual(bot.types, []);
 });
+
+const { RecipeListComponent } = await import('../src/app/pages/recipe-list/recipe-list.component.ts');
+test('slider: cambia en ambos sentidos y vuelve al inicio', () => {
+  const page = new RecipeListComponent({});
+  assert.equal(page.slide, 0);
+  page.changeSlide(-1); assert.equal(page.slide, 2);
+  page.changeSlide(1); assert.equal(page.slide, 0);
+  page.changeSlide(1); assert.equal(page.slide, 1);
+  page.changeSlide(1); assert.equal(page.slide, 2);
+  page.changeSlide(1); assert.equal(page.slide, 0);
+});

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgFor, NgIf } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Recipe } from '../../models/recipe.interface';
 import { RecipeService } from '../../services/recipe.service';
@@ -8,16 +9,14 @@ import { RecipeCardComponent } from '../../components/recipe-card/recipe-card.co
 @Component({
   selector: 'app-recipe-list',
   standalone: true,
-  imports: [NgFor, NgIf, FormsModule, RecipeCardComponent],
+  imports: [NgFor, NgIf, FormsModule, RecipeCardComponent, RouterLink],
   template: `
-    <section class="hero">
-      <div class="hero-copy">
-        <h1>Recetas para cocinar y compartir</h1>
-        <p>Busca una receta, consulta sus ingredientes o comparte la tuya.</p>
-        <a class="button button-dark" href="#catalogo">Ver recetas</a>
-      </div>
-      <div class="hero-image" role="img" aria-label="Mesa cálida con platillos para compartir">
-      </div>
+    <section class="welcome-slider" aria-label="Imágenes de bienvenida">
+      <a *ngIf="slide === 0" href="#recipe-search"><img src="assets/bienvenida.jpg" alt="Bienvenido a la comunidad. Explorar recetas."></a>
+      <img *ngIf="slide === 1" src="assets/fest.jpg" alt="Foodies Fest, 24 de diciembre de 2026, en el Ángel de la Independencia. Información del evento.">
+      <a *ngIf="slide === 2" routerLink="/bot"><img src="assets/cocinabot.jpg" alt="¿Tienes dudas sobre el sitio? Hablar con Cocina Bot."></a>
+      <button type="button" class="slider-prev" aria-label="Imagen anterior" (click)="changeSlide(-1)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button>
+      <button type="button" class="slider-next" aria-label="Imagen siguiente" (click)="changeSlide(1)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>
     </section>
 
     <section id="catalogo" class="catalog-section">
@@ -39,6 +38,9 @@ import { RecipeCardComponent } from '../../components/recipe-card/recipe-card.co
   `,
 })
 export class RecipeListComponent implements OnInit {
+  slide = 0;
+  changeSlide(direction: number): void { this.slide = (this.slide + direction + 3) % 3; }
+
   recipes: Recipe[] = [];
   allRecipes: Recipe[] = [];
   query = '';
