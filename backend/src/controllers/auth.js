@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const password = require('../helpers/password');
 function account(user) { return { id: user.id, name: user.name, email: user.email, role: user.role }; }
 function session(user) {
-  return { user: account(user), token: jwt.sign({ version: user.sessionVersion || 0 }, process.env.JWT_SECRET, { subject: user.id, algorithm: 'HS256', expiresIn: '8h' }) };
+  return { user: account(user), token: jwt.sign({ role: user.role, version: user.sessionVersion || 0 }, process.env.JWT_SECRET, { subject: user.id, algorithm: 'HS256', expiresIn: '8h' }) };
 }
 async function register(req, res) {
   const { name, email, password: plain } = req.body || {};
