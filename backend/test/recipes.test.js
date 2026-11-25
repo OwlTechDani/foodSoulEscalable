@@ -3,9 +3,9 @@ const assert = require('node:assert/strict');
 const { randomUUID, randomBytes } = require('node:crypto');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
-const connect = require('../src/database/config');
-const User = require('../src/models/user');
-const Server = require('../src/models/server');
+const { connect } = require('../dist/database/config');
+const { User } = require('../dist/models/user');
+const { Server } = require('../dist/models/server');
 
 test('MongoDB: registro, JWT, persistencia, permisos, comentarios y administración', async () => {
   process.env.JWT_SECRET = randomBytes(32).toString('hex');
@@ -56,7 +56,7 @@ test('MongoDB: registro, JWT, persistencia, permisos, comentarios y administraci
     assert.equal((await send('/recipes/' + saved.id, 'PUT', recipe, other.token)).status, 403);
     assert.equal((await send('/recipes/' + saved.id, 'DELETE', undefined, other.token)).status, 403);
     assert.equal((await send('/recipes/' + saved.id, 'PUT', {...recipe,title:'Receta editada'}, owner.token)).status, 200);
-    const Recipe = require('../src/models/recipe');
+    const { Recipe } = require('../dist/models/recipe');
     const fixtures = await Recipe.insertMany(Array.from({ length: 7 }, (_, index) => ({
       ...recipe, title: 'Página ' + index, owner: owner.user.id, author: owner.user.name,
       recipeType: index === 6 ? 'Acompañamiento' : 'Plato principal',
