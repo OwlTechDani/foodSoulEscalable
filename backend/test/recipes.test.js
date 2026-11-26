@@ -60,12 +60,16 @@ test('MongoDB: registro, JWT, persistencia, permisos, comentarios y administraci
     const fixtures = await Recipe.insertMany(Array.from({ length: 7 }, (_, index) => ({
       ...recipe, title: 'Página ' + index, owner: owner.user.id, author: owner.user.name,
       recipeType: index === 6 ? 'Acompañamiento' : 'Plato principal',
+      likes: Array.from({ length: index }, (_, likeIndex) => 'user' + likeIndex),
     })));
     const first = await (await send('/recipes?page=1&limit=6&q=P%C3%A1gina')).json();
     const second = await (await send('/recipes?page=2&limit=6&q=P%C3%A1gina')).json();
     assert.equal(first.data.length, 6); assert.equal(second.data.length, 1);
     assert.equal(first.total, 7); assert.equal(first.totalPages, 2);
     assert.equal(new Set([...first.data, ...second.data].map(r => r.id)).size, 7);
+    const popular = await (await send('/recipes?page=1&limit=6&q=P%C3%A1gina&sort=popular')).json();
+    assert.deepEqual(popular.data.map(r => r.id), fixtures.slice(1).reverse().map(r => r.id));
+    assert.equal((await send('/recipes?sort=unknown')).status, 400);
     const filtered = await (await send('/recipes?page=1&limit=6&q=P%C3%A1gina&type=Acompa%C3%B1amiento&category=Cena&tag=F%C3%A1cil')).json();
     assert.equal(filtered.total, 1); assert.equal(filtered.data.length, 1);
     const empty = await (await send('/recipes?page=1&q=NoExiste')).json();

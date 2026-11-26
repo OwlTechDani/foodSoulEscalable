@@ -75,10 +75,13 @@ test('Comunidad pide páginas y reinicia la consulta al aplicar filtros', () => 
   community.query = 'Pan'; community.selectedCategory = 'Cena';
   community.filterRecipes();
   assert.equal(community.page, 1);
-  assert.deepEqual(calls[2], [1, 'Pan', 'Cena', '', '']);
+  assert.deepEqual(calls[2], [1, 'Pan', 'Cena', '', '', 'recent']);
   community.query = 'Sin aplicar';
   community.loadPage(1);
   assert.equal(calls[3][1], 'Pan');
+  community.selectedSort = 'popular';
+  community.filterRecipes();
+  assert.equal(calls[4][5], 'popular');
 });
 
 test('un guardado fallido permite reintentar y no navega', () => {

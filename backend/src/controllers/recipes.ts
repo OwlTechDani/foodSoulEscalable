@@ -1,4 +1,5 @@
 import type { Request, Response } from 'express';
+import type { PipelineStage } from 'mongoose';
 import Catalog from '../models/catalog';
 import Recipe, { type RecipeDocument } from '../models/recipe';
 import type { UserDocument } from '../models/user';
@@ -186,6 +187,11 @@ export async function getRecipes(req: Request, res: Response): Promise<void> {
 
   const rawPage = req.query.page;
   const rawLimit = req.query.limit;
+  const rawSort = req.query.sort;
+  if (rawSort !== undefined && (typeof rawSort !== 'string' || !['recent', 'popular'].includes(rawSort))) {
+    res.status(400).json({ error: 'El orden debe ser recent o popular' });
+    return;
+  }
   const paginated = rawPage !== undefined || rawLimit !== undefined;
   const page = Number(rawPage ?? 1);
   const limit = Number(rawLimit ?? 6);
@@ -204,16 +210,31 @@ export async function getRecipes(req: Request, res: Response): Promise<void> {
     return;
   }
 
-  const query = Recipe.find(filter).sort({ createdAt: -1, _id: -1 }).select('-comments');
-  if (!paginated) {
-    res.json({ data: await query });
-    return;
+  const countPromise = paginated ? Recipe.countDocuments(filter) : Promise.resolve(0);
+  let data: unknown[];
+  let total: number;
+  if (rawSort === 'popular') {
+    const pipeline: PipelineStage[] = [
+      { $match: filter },
+      { $addFields: { likesCount: { $size: { $ifNull: ['$likes', []] } } } },
+      { $sort: { likesCount: -1, createdAt: -1, _id: -1 } },
+      ...(paginated ? [{ $skip: (page - 1) * limit }, { $limit: limit }] : []),
+      { $addFields: { id: '$_id' } },
+      { $project: { comments: 0, likesCount: 0 } },
+    ];
+    [data, total] = await Promise.all([Recipe.aggregate(pipeline), countPromise]);
+  } else {
+    const query = Recipe.find(filter).sort({ createdAt: -1, _id: -1 }).select('-comments');
+    [data, total] = await Promise.all([
+      paginated ? query.skip((page - 1) * limit).limit(limit) : query,
+      countPromise,
+    ]);
   }
 
-  const [data, total] = await Promise.all([
-    query.skip((page - 1) * limit).limit(limit),
-    Recipe.countDocuments(filter),
-  ]);
+  if (!paginated) {
+    res.json({ data });
+    return;
+  }
   res.json({
     data,
     page,

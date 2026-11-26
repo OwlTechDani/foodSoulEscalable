@@ -26,6 +26,7 @@ import { RecipeCardComponent } from '../../components/recipe-card/recipe-card.co
         </select>
         <label for="type-filter">Tipo</label><select id="type-filter" name="type" [(ngModel)]="selectedType"><option value="">Todos los tipos</option><option *ngFor="let type of types" [value]="type">{{ type }}</option></select>
         <label for="tag-filter">Etiqueta</label><select id="tag-filter" name="tag" [(ngModel)]="selectedTag"><option value="">Todas las etiquetas</option><option *ngFor="let tag of tags" [value]="tag">{{ tag }}</option></select>
+        <label for="sort-filter">Ordenar por</label><select id="sort-filter" name="sort" [(ngModel)]="selectedSort"><option value="recent">Más recientes</option><option value="popular">Más populares</option></select>
         <button class="button button-dark" type="submit">Aplicar filtro</button>
       </form>
 
@@ -47,9 +48,9 @@ export class CommunityComponent implements OnInit, OnDestroy {
   private request?: Subscription;
   recipes: Recipe[] = [];
   categories: string[] = []; types: string[] = []; tags: string[] = [];
-  selectedCategory = ''; selectedType = ''; selectedTag = ''; query = '';
+  selectedCategory = ''; selectedType = ''; selectedTag = ''; selectedSort = 'recent'; query = '';
   page = 1; totalPages = 1;
-  private filters = { q: '', category: '', type: '', tag: '' };
+  private filters = { q: '', category: '', type: '', tag: '', sort: 'recent' };
   loading = true;
   error = '';
 
@@ -68,7 +69,7 @@ export class CommunityComponent implements OnInit, OnDestroy {
   }
 
   filterRecipes(): void {
-    this.filters = { q: this.query, category: this.selectedCategory, type: this.selectedType, tag: this.selectedTag };
+    this.filters = { q: this.query, category: this.selectedCategory, type: this.selectedType, tag: this.selectedTag, sort: this.selectedSort };
     this.loadPage(1);
   }
 
@@ -78,8 +79,8 @@ export class CommunityComponent implements OnInit, OnDestroy {
     if (page < 1 || page > this.totalPages) return;
     this.request?.unsubscribe();
     this.loading = true; this.error = '';
-    const { q, category, type, tag } = this.filters;
-    this.request = this.recipeService.getPage(page, q, category, type, tag).subscribe({
+    const { q, category, type, tag, sort } = this.filters;
+    this.request = this.recipeService.getPage(page, q, category, type, tag, sort).subscribe({
       next: result => {
         this.totalPages = result.totalPages;
         if (page > result.totalPages) { this.loadPage(result.totalPages); return; }
