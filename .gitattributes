@@ -1,0 +1,2 @@
+backend/test/recipes.test.js -linguist-detectable
+frontend/test/recipes.test.mjs -linguist-detectable
