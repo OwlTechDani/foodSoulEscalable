@@ -15,7 +15,7 @@ import { RecipeService } from '../../services/recipe.service';
     <p class="simple-page" *ngIf="loading">Cargando receta…</p>
     <p class="simple-page form-error" role="alert" *ngIf="error">{{ error }}</p>
     <section class="detail-page" *ngIf="recipe">
-      <a class="back-link" routerLink="/recipes">← Volver a todas las recetas</a>
+      <a class="back-link" routerLink="/">← Volver a todas las recetas</a>
       <div class="detail-hero">
         <div class="detail-copy">
           <span class="recipe-meta">{{ recipe.category }} · {{ recipe.prepMinutes }} MIN</span>

@@ -9,7 +9,7 @@ import { RouterLink } from '@angular/router';
     <section class="empty-state">
       <h1>Página no encontrada</h1>
       <p>Revisa la dirección o vuelve al catálogo.</p>
-      <a class="button button-dark" routerLink="/recipes">Ir al catálogo</a>
+      <a class="button button-dark" routerLink="/">Ir al catálogo</a>
     </section>
   `,
 })
