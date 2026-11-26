@@ -10,6 +10,7 @@ import { ProfileComponent } from './pages/profile/profile.component';
 
 export const routes: Routes = [
   { path: '', component: RecipeListComponent, title: 'Inicio | Food For My Soul' },
+  { path: 'recipes', redirectTo: '', pathMatch: 'full' },
   { path: 'comunidad', component: CommunityComponent, title: 'Comunidad | Food For My Soul' },
   { path: 'publicar', component: PublishComponent, title: 'Publicar | Food For My Soul' },
   { path: 'recipes/:id/editar', component: PublishComponent, title: 'Editar receta | Food For My Soul' },
